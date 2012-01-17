@@ -49,21 +49,7 @@ class RSSParser
       else #otherwise treat as standard RSS
         #RSS handling code goes here
       end
-      
-      #debug/testing
-      chambers << chamber unless chambers.include?(chamber)
-      committees << committee unless committees.include?(committee)
-      
-      # case committee
-      #   when /Committee/
-      #     #is a committee
-      #     type = "Committee"
-      #   when /Estimated Rising Time/
-      #     type = "EstimatedRisingTime"
-      #   else
-      #     #generic business item
-      # end
-      
+            
       case chamber
         when "Main Chamber"
           #business item
@@ -135,9 +121,5 @@ class RSSParser
           p ""
       end
     end
-    
-    # p chambers
-    # p ""
-    # p committees
   end
 end
