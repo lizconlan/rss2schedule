@@ -21,26 +21,34 @@ class RSSParser
       link  = item.xpath("link").text
       guid = item.xpath("guid").text
       
-      event_id = item.xpath("parlycal:event").attribute("id").value
-      house = item.xpath("parlycal:event/parlycal:house").text
-      chamber = item.xpath("parlycal:event/parlycal:chamber").text
+      #prefer the parlycal:event data if available
+      if item.xpath("parlycal:event") and item.xpath("parlycal:event") != []
+        event_id = item.xpath("parlycal:event").attribute("id").value
+        house = item.xpath("parlycal:event/parlycal:house").text
+        chamber = item.xpath("parlycal:event/parlycal:chamber").text
       
-      committee = item.xpath("parlycal:event/parlycal:comittee").text
-      subject = item.xpath("parlycal:event/parlycal:subject").text
-      inquiry = item.xpath("parlycal:event/parlycal:inquiry").text
+        committee = item.xpath("parlycal:event/parlycal:comittee").text
+        subject = item.xpath("parlycal:event/parlycal:subject").text.strip
+        inquiry = item.xpath("parlycal:event/parlycal:inquiry").text.strip
       
-      date = item.xpath("parlycal:event/parlycal:date").text
-      if item.xpath("parlycal:event/parlycal:startTime") and !(item.xpath("parlycal:event/parlycal:startTime").empty?)
-        start_time = item.xpath("parlycal:event/parlycal:startTime")
-      else
-        start_time = nil
+        date = item.xpath("parlycal:event/parlycal:date").text
+        if item.xpath("parlycal:event/parlycal:startTime") and !(item.xpath("parlycal:event/parlycal:startTime").empty?)
+          start_time = item.xpath("parlycal:event/parlycal:startTime").text
+        else
+          start_time = nil
+        end
+        
+        if item.xpath("parlycal:event/parlycal:endTime") and !(item.xpath("parlycal:event/parlycal:endTime").empty?)
+          end_time = item.xpath("parlycal:event/parlycal:endTime").text
+        else
+          end_time = nil
+        end
+      
+        witnesses = item.xpath("parlycal:event/parlycal:witnesses").text
+        location = item.xpath("parlycal:event/parlycal:location").text
+      else #otherwise treat as standard RSS
+        #RSS handling code goes here
       end
-      
-      witnesses = item.xpath("parlycal:event/parlycal:witnesses").text
-      location = item.xpath("parlycal:event/parlycal:location").text
-      
-      
-      
       
       #debug/testing
       chambers << chamber unless chambers.include?(chamber)
@@ -59,17 +67,60 @@ class RSSParser
       case chamber
         when "Main Chamber"
           #business item
+          category = committee
+          committee = nil
+          if subject.empty?
+            subject = inquiry
+            sponsor = ""
+          else
+            sponsor = inquiry.gsub(subject,"").strip
+            if sponsor[0..0] == "-"
+              sponsor = sponsor[1..sponsor.length].strip
+            end
+          end
+          
+          if sponsor.empty?
+            subject_parts = subject.split(" - ")
+            if subject_parts.length == 3
+              sponsor = subject_parts.pop
+              subject = subject_parts.join(" - ").strip
+            end
+          end
+          
+          # p subject
+          # p "Category: #{category}"
+          # p "Sponsor: #{sponsor}"
+          # p ""
         when "Westminster Hall"
           #almost certainly a debate
-          p "#{chamber} - #{inquiry}"
+          if subject.empty?
+            subject = inquiry
+            sponsor = ""
+          else
+            sponsor = inquiry.gsub(subject,"").strip
+            if sponsor[0..0] == "-"
+              sponsor = sponsor[1..sponsor.length].strip
+            end
+          end
+          
+          # p subject
+          # p "Category: #{category}"
+          # p "Sponsor: #{sponsor}"
+          # p "#{start_time} - #{end_time}"
+          # p ""
         else
           #of interest - an actual committee thing?
-          p "#{chamber} - #{committee}"
+          if subject.empty?
+            p "BLANK SUBJECT"
+          else
+            p subject
+          end
+          
       end
     end
     
-    p chambers
-    p ""
-    p committees
+    # p chambers
+    # p ""
+    # p committees
   end
 end
