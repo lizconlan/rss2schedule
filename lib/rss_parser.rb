@@ -108,14 +108,31 @@ class RSSParser
           # p "Sponsor: #{sponsor}"
           # p "#{start_time} - #{end_time}"
           # p ""
-        else
-          #of interest - an actual committee thing?
-          if subject.empty?
-            p "BLANK SUBJECT"
-          else
-            p subject
+        else  #meetings, rising times, room bookings
+          if committee == "Estimated Rising Time"
+            subject = committee
+            committee = ""
           end
           
+          if subject.empty?
+            case witnesses
+              when /evidence session/
+                subject = "Evidence Session"
+              when /private meeting/
+                subject = "Private meeting"
+            end
+          end
+          
+          if subject == "to consider the bill"
+            if committee =~ /(^.* Bill)/
+              subject = "To consider the #{$1}"
+            end
+          end
+          
+          p subject
+          p "#{chamber} - #{committee}"
+          p location
+          p ""
       end
     end
     
