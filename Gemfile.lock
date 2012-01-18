@@ -12,6 +12,7 @@ GEM
     bson (1.4.0)
     bson_ext (1.4.0)
     builder (3.0.0)
+    diff-lcs (1.1.2)
     htmlentities (4.2.2)
     i18n (0.6.0)
     json (1.5.1)
@@ -29,6 +30,14 @@ GEM
     rcov (0.9.11)
     rest-client (1.6.1)
       mime-types (>= 1.16)
+    rspec (2.8.0)
+      rspec-core (~> 2.8.0)
+      rspec-expectations (~> 2.8.0)
+      rspec-mocks (~> 2.8.0)
+    rspec-core (2.8.0)
+    rspec-expectations (2.8.0)
+      diff-lcs (~> 1.1.2)
+    rspec-mocks (2.8.0)
 
 PLATFORMS
   ruby
@@ -42,3 +51,4 @@ DEPENDENCIES
   nokogiri (~> 1.4.1)
   rcov
   rest-client (~> 1.6.1)
+  rspec

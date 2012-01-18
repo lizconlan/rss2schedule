@@ -10,4 +10,5 @@ gem 'htmlentities', '~>4.2.1'
 
 group :test do
   gem 'rcov'
+  gem 'rspec'
 end
