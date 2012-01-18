@@ -15,6 +15,11 @@ describe RSSParser do
 		    @rssparser.feed_url.should eql "http://services.parliament.uk/calendar/all.rss"
 	    end
 
+      it "accepts an alternate feed url" do
+        parser = RSSParser.new("http://example.com/fake.rss")
+        parser.feed_url.should eql "http://example.com/fake.rss"
+      end
+
     end
 
 end
