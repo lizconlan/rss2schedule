@@ -21,8 +21,8 @@ env = {}
 MongoMapper.config = { env => {'uri' => MONGO_URL} }
 MongoMapper.connect(env)
 
-desc 'temporary thing to show that the parser is working'
-task :parser_test do
+desc 'parse the all.rss file'
+task :parse_rss do
   p = RSSParser.new
   p.parse
 end
