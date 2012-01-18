@@ -5,6 +5,8 @@ gem 'json', '~>1.5.1'
 gem 'mongo_mapper', '~>0.9.2'
 gem 'bson_ext', '1.4.0'
 gem 'bson', '1.4.0'
+gem 'nokogiri', '~>1.4.1'
+gem 'htmlentities', '~>4.2.1'
 
 group :test do
   gem 'rcov'
