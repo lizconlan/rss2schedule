@@ -115,10 +115,28 @@ class RSSParser
             end
           end
           
-          p subject
-          p "#{chamber} - #{committee}"
-          p location
-          p ""
+          item = Item.new
+          
+          item.source_file = @feed_url
+          item.event_id = event_id
+          
+          item.date = date
+          item.title = subject
+          item.house = house
+          if location.empty?
+            item.location = "tbc"
+          else
+            item.location = location
+          end
+          item.sponsor = "#{chamber} - #{committee}"
+          item.start_time = start_time unless start_time.nil?
+          item.end_time = end_time unless start_time.nil?
+          item.link = link
+          item.witnesses = witnesses unless witnesses.empty?
+          
+          item.created_at = Time.now
+          
+          item.save
       end
     end
   end
