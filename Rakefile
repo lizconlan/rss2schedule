@@ -1,10 +1,9 @@
 require 'rubygems'
 
-# require 'bundler'
-# Bundler.setup
+require 'bundler'
+Bundler.setup
 
 require 'rake'
-require 'rake/testtask'
 
 require 'mongo_mapper'
 require 'time'
