@@ -5,6 +5,7 @@ class Item
   include MongoMapper::Document
   
   key :event_id, String
+  key :rss_id, String
   key :source_file, String
   
   key :date, String
@@ -16,9 +17,8 @@ class Item
   key :end_time, String
   
   key :link, String
-  key :categories, Array
+  key :item_type, String
   
-  key :notes, String
   key :witnesses, String
   
   key :created_at, Date

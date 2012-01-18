@@ -73,10 +73,8 @@ class RSSParser
             end
           end
           
-          # p subject
-          # p "Category: #{category}"
-          # p "Sponsor: #{sponsor}"
-          # p ""
+          location = chamber
+          item_type = category
         when "Westminster Hall"
           #almost certainly a debate
           if subject.empty?
@@ -89,15 +87,13 @@ class RSSParser
             end
           end
           
-          # p subject
-          # p "Category: #{category}"
-          # p "Sponsor: #{sponsor}"
-          # p "#{start_time} - #{end_time}"
-          # p ""
+          location = chamber
+          item_type = category || "Debate"
         else  #meetings, rising times, room bookings
           if committee == "Estimated Rising Time"
             subject = committee
             committee = ""
+            item_type = "Business"
           end
           
           if subject.empty?
@@ -115,29 +111,34 @@ class RSSParser
             end
           end
           
-          item = Item.new
-          
-          item.source_file = @feed_url
-          item.event_id = event_id
-          
-          item.date = date
-          item.title = subject
-          item.house = house
-          if location.empty?
-            item.location = "tbc"
-          else
-            item.location = location
-          end
-          item.sponsor = "#{chamber} - #{committee}"
-          item.start_time = start_time unless start_time.nil?
-          item.end_time = end_time unless start_time.nil?
-          item.link = link
-          item.witnesses = witnesses unless witnesses.empty?
-          
-          item.created_at = Time.now
-          
-          item.save
+          sponsor = "#{chamber} - #{committee}"
+          item_type = "Meeting"
       end
+      
+      item = Item.new
+      
+      item.source_file = @feed_url
+      item.rss_id = guid
+      item.event_id = event_id
+      item.item_type = item_type
+      
+      item.date = date
+      item.title = subject
+      item.house = house
+      if location.empty?
+        item.location = "tbc"
+      else
+        item.location = location
+      end
+      item.sponsor = sponsor unless sponsor.empty?
+      item.start_time = start_time unless start_time.nil?
+      item.end_time = end_time unless start_time.nil?
+      item.link = link
+      item.witnesses = witnesses unless witnesses.empty?
+      
+      item.created_at = Time.now
+      
+      item.save
     end
   end
 end
