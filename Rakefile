@@ -14,6 +14,9 @@ require 'lib/rss_parser'
 
 #persisted models
 require 'models/item'
+require 'rspec/core/rake_task'
+
+RSpec::Core::RakeTask.new(:spec)
 
 MONGO_URL = ENV['MONGOHQ_URL'] || YAML::load(File.read("config/mongo.yml"))[:mongohq_url]
 
