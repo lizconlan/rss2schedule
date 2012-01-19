@@ -19,41 +19,19 @@ class RSSParser
       @guid = item.xpath("guid").text
       
       #prefer the parlycal:event data if available
-      if item.xpath("parlycal:event") and item.xpath("parlycal:event") != []
-        @event_id = item.xpath("parlycal:event").attribute("id").value
-        @house = item.xpath("parlycal:event/parlycal:house").text
-        @chamber = item.xpath("parlycal:event/parlycal:chamber").text
-      
-        @committee = item.xpath("parlycal:event/parlycal:comittee").text
-        @subject = item.xpath("parlycal:event/parlycal:subject").text.strip
-        @inquiry = item.xpath("parlycal:event/parlycal:inquiry").text.strip
-      
-        @date = item.xpath("parlycal:event/parlycal:date").text
-        if item.xpath("parlycal:event/parlycal:startTime") and !(item.xpath("parlycal:event/parlycal:startTime").empty?)
-          @start_time = item.xpath("parlycal:event/parlycal:startTime").text
-        else
-          @start_time = nil
-        end
+      if item.xpath("parlycal:event") and !(item.xpath("parlycal:event").empty?)
+        parse_parlyevent(item)
         
-        if item.xpath("parlycal:event/parlycal:endTime") and !(item.xpath("parlycal:event/parlycal:endTime").empty?)
-          @end_time = item.xpath("parlycal:event/parlycal:endTime").text
-        else
-          @end_time = nil
+        case @chamber
+          when "Main Chamber"
+            parse_business_item()
+          when "Westminster Hall"
+            parse_westminster_hall_item()
+          else  #meetings, rising times, room bookings
+            parse_other_item()
         end
-      
-        @witnesses = item.xpath("parlycal:event/parlycal:witnesses").text
-        @location = item.xpath("parlycal:event/parlycal:location").text
       else #otherwise treat as standard RSS
-        #RSS handling code goes here
-      end
-      
-      case @chamber
-        when "Main Chamber"
-          parse_business_item()
-        when "Westminster Hall"
-          parse_westminster_hall_item()
-        else  #meetings, rising times, room bookings
-          parse_other_item()
+        parse_rss(item)
       end
       
       item = Item.new
@@ -66,16 +44,16 @@ class RSSParser
       item.date = @date
       item.title = @subject
       item.house = @house
-      if @location.empty?
+      if @location.nil? or @location.empty?
         item.location = "tbc"
       else
         item.location = @location
       end
-      item.sponsor = @sponsor unless @sponsor.empty?
+      item.sponsor = @sponsor unless @sponsor.nil? or @sponsor.empty?
       item.start_time = @start_time unless @start_time.nil?
       item.end_time = @end_time unless @end_time.nil?
       item.link = @link
-      item.witnesses = @witnesses unless @witnesses.empty?
+      item.notes = @notes unless @notes.nil? or @notes.empty?
       
       item.created_at = Time.now
       
@@ -131,7 +109,7 @@ class RSSParser
     end
     
     if @subject.empty?
-      case @witnesses
+      case @notes
         when /evidence session/
           @subject = "Evidence Session"
         when /private meeting/
@@ -147,5 +125,67 @@ class RSSParser
     
     @sponsor = "#{@chamber} - #{@committee}"
     @item_type = "Meeting"
+  end
+  
+  def parse_parlyevent(item)
+    @event_id = item.xpath("parlycal:event").attribute("id").value
+    @house = item.xpath("parlycal:event/parlycal:house").text
+    @chamber = item.xpath("parlycal:event/parlycal:chamber").text
+
+    @committee = item.xpath("parlycal:event/parlycal:comittee").text
+    @subject = item.xpath("parlycal:event/parlycal:subject").text.strip
+    @inquiry = item.xpath("parlycal:event/parlycal:inquiry").text.strip
+
+    @date = item.xpath("parlycal:event/parlycal:date").text
+    if item.xpath("parlycal:event/parlycal:startTime") and !(item.xpath("parlycal:event/parlycal:startTime").empty?)
+      @start_time = item.xpath("parlycal:event/parlycal:startTime").text
+    else
+      @start_time = nil
+    end
+
+    if item.xpath("parlycal:event/parlycal:endTime") and !(item.xpath("parlycal:event/parlycal:endTime").empty?)
+      @end_time = item.xpath("parlycal:event/parlycal:endTime").text
+    else
+      @end_time = nil
+    end
+
+    @notes = item.xpath("parlycal:event/parlycal:witnesses").text
+    @location = item.xpath("parlycal:event/parlycal:location").text
+  end
+
+  def parse_rss(item)
+    title = item.xpath("title").text
+    if title =~ /House of Commons/
+      @house = "Commons"
+    else
+      @house = "Lords"
+    end
+    title_parts = title.split(" - ")
+    @chamber = title_parts[0].gsub("House of #{@house} ", "")
+    @category = title_parts[1].gsub("\n", "").strip
+    @sponsor = title_parts[2] if title_parts.length > 2
+    @notes = item.xpath("description").text
+    
+    categories = item.xpath("category")
+    categories.each do |cat|
+      unless cat == "House of #{@house}"
+        if @chamber != cat
+          @sponsor = @category
+          @chamber = ""
+        end
+      end
+    end
+    
+    if @notes =~ /([A-Z][a-z]*day \d{1,2} [A-Z][a-z]* \d{4})/
+      date = Date.parse($1)
+      @date = date.strftime("%Y-%m-%d")
+    end
+    
+    if @notes =~ /(\d{1,2}:\d{2}(?: )?[a|p]m) - (\d{1,2}:\d{2}(?: )?[a|p]m)/
+      @start_time = $1
+      @end_time = $2
+    elsif @notes =~ /(\d{1,2}:\d{2}(:? )?[a|p]m)/
+      @start_time = $1
+    end
   end
 end

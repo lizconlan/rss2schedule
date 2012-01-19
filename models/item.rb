@@ -19,7 +19,7 @@ class Item
   key :link, String
   key :item_type, String
   
-  key :witnesses, String
+  key :notes, String
   
   key :created_at, Date
   key :updated_at, Date
