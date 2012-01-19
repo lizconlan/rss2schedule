@@ -56,7 +56,7 @@ describe RSSParser do
         House of Commons
       </category>
       <category>
-        Main Chamber
+        Westminster Hall
       </category>
       <description>
         Friday 24 February 2012 - 9:30am - 11:00am &lt;br /&gt; Health inequalities in the North East

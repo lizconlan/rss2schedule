@@ -40,13 +40,15 @@ class RSSParser
   def parse_business_item
     @category = @committee
     @committee = nil
-    if @subject.empty?
-      @subject = @inquiry
-      @sponsor = ""
-    else
-      @sponsor = @inquiry.gsub(@subject,"").strip
-      if @sponsor[0..0] == "-"
-        @sponsor = @sponsor[1..@sponsor.length].strip
+    if @sponsor.nil? or @sponsor.empty?
+      if @subject.empty?
+        @subject = @inquiry
+        @sponsor = ""
+      else
+        @sponsor = @inquiry.gsub(@subject,"").strip
+        if @sponsor[0..0] == "-"
+          @sponsor = @sponsor[1..@sponsor.length].strip
+        end
       end
     end
     
@@ -63,13 +65,15 @@ class RSSParser
   end
   
   def parse_westminster_hall_item
-    if @subject.empty?
-      @subject = @inquiry
-      @sponsor = ""
-    else
-      @sponsor = @inquiry.gsub(@subject,"").strip
-      if @sponsor[0..0] == "-"
-        @sponsor = @sponsor[1..@sponsor.length].strip
+    if @sponsor.nil? or @sponsor.empty?
+      if @subject.empty?
+        @subject = @inquiry
+        @sponsor = ""
+      else
+        @sponsor = @inquiry.gsub(@subject,"").strip
+        if @sponsor[0..0] == "-"
+          @sponsor = @sponsor[1..@sponsor.length].strip
+        end
       end
     end
     
@@ -84,7 +88,7 @@ class RSSParser
       @item_type = "Business"
     end
     
-    if @subject.empty?
+    if @subject.nil? or @subject.empty?
       case @notes
         when /evidence session/
           @subject = "Evidence Session"
@@ -129,27 +133,36 @@ class RSSParser
     @location = item.xpath("parlycal:event/parlycal:location").text
   end
 
-  def parse_rss(item)
-    title = item.xpath("title").text
+  def parse_rss(item)    
+    title = item.xpath("title").text.gsub("\n", " ").squeeze(" ").strip
     if title =~ /House of Commons/
       @house = "Commons"
     else
       @house = "Lords"
     end
     title_parts = title.split(" - ")
-    @chamber = title_parts[0].gsub("House of #{@house} ", "")
+    @subject = title
+    @inquiry = title
+    
+    @chamber = title_parts[0].gsub("House of #{@house} ", "").gsub("\n", "").strip
+    
     @category = title_parts[1].gsub("\n", "").strip
     @sponsor = title_parts[2] if title_parts.length > 2
     @notes = item.xpath("description").text
     
     categories = item.xpath("category")
     categories.each do |cat|
+      cat = cat.text.gsub("\n", "").strip
       unless cat == "House of #{@house}"
         if @chamber != cat
-          @sponsor = @category
-          @chamber = ""
+          @chamber = cat
         end
       end
+    end
+    
+    if @sponsor.nil? and @chamber != @category
+      @sponsor = @category
+      @category = ""
     end
     
     if @notes =~ /([A-Z][a-z]*day \d{1,2} [A-Z][a-z]* \d{4})/
