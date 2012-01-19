@@ -28,9 +28,15 @@ task :parse_rss do
   p.parse
 end
 
+
 RSpec::Core::RakeTask.new(:spec)
 
 namespace :spec do
   desc  "Run all specs with rcov"
-  RSpec::Core::RakeTask.new(:rcov)
+  RSpec::Core::RakeTask.new(:rcov) do |t|
+    t.rcov = true
+    t.pattern = "./spec/*_spec.rb"
+    t.rcov_opts = %w{--exclude spec,gems}
+    t.rspec_path = '/usr/local/bin/rspec'
+  end
 end
