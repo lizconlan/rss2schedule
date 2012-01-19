@@ -17,12 +17,11 @@ describe RSSParser do
     end
     
     it "accepts an alternate feed url" do
-      parser = RSSParser.new("http://example.com/fake.rss")
-      parser.feed_url.should eql "http://example.com/fake.rss"
+      RSSParser.new("http://example.com/fake.rss").feed_url.should eql "http://example.com/fake.rss"
     end
   end
   
-  describe "#parse" do
+  describe "parse" do
     describe "when given an rss feed with no parlyevent markup" do
       before :each do
         RestClient.stub(:get).and_return(%Q|
@@ -70,6 +69,16 @@ describe RSSParser do
         @item = Item.new
         Item.stub(:new).and_return(@item)
         @item.stub(:save)
+      end
+      
+      describe "parse_business_item" do
+
+      end
+
+      describe "parse_westminster_hall_item" do
+      end
+
+      describe "parse_other_item" do
       end
       
       it "should call the parse_rss method" do
