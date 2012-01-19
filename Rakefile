@@ -16,8 +16,6 @@ require 'lib/rss_parser'
 require 'models/item'
 require 'rspec/core/rake_task'
 
-RSpec::Core::RakeTask.new(:spec)
-
 MONGO_URL = ENV['MONGOHQ_URL'] || YAML::load(File.read("config/mongo.yml"))[:mongohq_url]
 
 env = {}
@@ -28,4 +26,11 @@ desc 'parse the all.rss file'
 task :parse_rss do
   p = RSSParser.new
   p.parse
+end
+
+RSpec::Core::RakeTask.new(:spec)
+
+namespace :spec do
+  desc  "Run all specs with rcov"
+  RSpec::Core::RakeTask.new(:rcov) 
 end
