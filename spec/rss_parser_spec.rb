@@ -21,8 +21,13 @@ describe RSSParser do
   end
   
   describe "parse" do
-    it "" do
-    end
+  
+    it "returns parsed items"
+  
+    it "populates parsed items"
+    
+    it "saves parsed items"
+    
   end
   
   describe "parse_business_item" do
@@ -30,8 +35,11 @@ describe RSSParser do
   end
   
   describe "parse_westminster_hall_item" do
+  
   end
   
   describe "parse_other_item" do
+  
   end
+
 end
