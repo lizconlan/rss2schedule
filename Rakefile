@@ -32,5 +32,5 @@ RSpec::Core::RakeTask.new(:spec)
 
 namespace :spec do
   desc  "Run all specs with rcov"
-  RSpec::Core::RakeTask.new(:rcov) 
+  RSpec::Core::RakeTask.new(:rcov)
 end
