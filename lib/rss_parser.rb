@@ -11,53 +11,29 @@ class RSSParser
   
   def parse
     doc = Nokogiri::XML(@rss)
-    
     items = doc.xpath("//item")
     
     items.each do |item|
       @link  = item.xpath("link").text
       @guid = item.xpath("guid").text
-      
+
       #prefer the parlycal:event data if available
       if item.xpath("parlycal:event") and !(item.xpath("parlycal:event").empty?)
         parse_parlyevent(item)
-        
-        case @chamber
-          when "Main Chamber"
-            parse_business_item()
-          when "Westminster Hall"
-            parse_westminster_hall_item()
-          else  #meetings, rising times, room bookings
-            parse_other_item()
-        end
       else #otherwise treat as standard RSS
         parse_rss(item)
       end
       
-      item = Item.new
-      
-      item.source_file = @feed_url
-      item.rss_id = @guid
-      item.event_id = @event_id
-      item.item_type = @item_type
-      
-      item.date = @date
-      item.title = @subject
-      item.house = @house
-      if @location.nil? or @location.empty?
-        item.location = "tbc"
-      else
-        item.location = @location
+      case @chamber
+        when "Main Chamber"
+          parse_business_item()
+        when "Westminster Hall"
+          parse_westminster_hall_item()
+        else  #meetings, rising times, room bookings
+          parse_other_item()
       end
-      item.sponsor = @sponsor unless @sponsor.nil? or @sponsor.empty?
-      item.start_time = @start_time unless @start_time.nil?
-      item.end_time = @end_time unless @end_time.nil?
-      item.link = @link
-      item.notes = @notes unless @notes.nil? or @notes.empty?
       
-      item.created_at = Time.now
-      
-      item.save
+      save_item_data()
     end
   end
   
@@ -187,5 +163,28 @@ class RSSParser
     elsif @notes =~ /(\d{1,2}:\d{2}(:? )?[a|p]m)/
       @start_time = $1
     end
+  end
+  
+  def save_item_data
+    item = Item.new
+    item.source_file = @feed_url
+    item.rss_id = @guid
+    item.event_id = @event_id
+    item.item_type = @item_type
+    item.date = @date
+    item.title = @subject
+    item.house = @house
+    if @location.nil? or @location.empty?
+      item.location = "tbc"
+    else
+      item.location = @location
+    end
+    item.sponsor = @sponsor unless @sponsor.nil? or @sponsor.empty?
+    item.start_time = @start_time unless @start_time.nil?
+    item.end_time = @end_time unless @end_time.nil?
+    item.link = @link
+    item.notes = @notes unless @notes.nil? or @notes.empty?
+    item.created_at = Time.now
+    item.save
   end
 end
