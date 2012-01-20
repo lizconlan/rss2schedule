@@ -212,7 +212,7 @@ describe RSSParser do
           @rssparser.parse
         end
         
-        it "should not set the 'notes' for the RssItem" do
+        it "should set the 'notes' for the RssItem (if there are any)" do
           @rssitem1.should_not_receive(:notes=)
           @rssitem2.should_not_receive(:notes=)
           @rssitem3.should_not_receive(:notes=)
