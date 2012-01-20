@@ -25,47 +25,7 @@ describe RSSParser do
   describe "parse" do
     describe "when given an RSS feed without ParlyCal markup" do
       before :each do
-        RestClient.stub(:get).and_return(%Q|
-<rss xmlns:parlycal='http://services.parliament.uk/ns/calendar/feeds' version='2.0'>
-  <channel>
-    <title>
-      Houses of Parliament
-    </title>
-    <description>
-      Forthcoming events in the Houses of Parliament
-    </description>
-    <language>
-      en
-    </language>
-    <link>
-      http://services.parliament.uk/calendar/
-    </link>
-    <item>
-      <title>
-        House of Commons Westminster Hall - Chi Onwurah
-      </title>
-      <link>
-        http://services.parliament.uk/calendar/Commons/MainChamber/2012/02/24/events.html
-      </link>
-      <guid>
-        http://services.parliament.uk/calendar/2012/02/24/events.html#23288
-      </guid>
-      <author>
-        webmaster@parliament.uk (UK Parliament Webmaster)
-      </author>
-      <category>
-        House of Commons
-      </category>
-      <category>
-        Westminster Hall
-      </category>
-      <description>
-        Friday 24 February 2012 - 9:30am - 11:00am &lt;br /&gt; Health inequalities in the North East
-        today
-      </description>
-    </item>
-  </channel>
-</rss>|)
+        RestClient.stub(:get).and_return(File.read("spec/data/noparlyevent-wh.rss"))
         @rssparser = RSSParser.new
         @item = Item.new
         Item.stub(:new).and_return(@item)
@@ -110,73 +70,7 @@ describe RSSParser do
 
     describe "when given an RSS feed with ParlyCal markup" do
       before :each do
-        RestClient.stub(:get).and_return(%Q|
-<rss xmlns:parlycal='http://services.parliament.uk/ns/calendar/feeds' version='2.0'>
-<channel>
-  <title>
-    Houses of Parliament
-  </title>
-  <description>
-    Forthcoming events in the Houses of Parliament
-  </description>
-  <language>
-    en
-  </language>
-  <link>
-    http://services.parliament.uk/calendar/
-  </link>
-  <item>
-    <title>
-      House of Commons Westminster Hall - Chi Onwurah
-    </title>
-    <link>
-      http://services.parliament.uk/calendar/Commons/MainChamber/2012/02/24/events.html
-    </link>
-    <guid>
-      http://services.parliament.uk/calendar/2012/02/24/events.html#23288
-    </guid>
-    <author>
-      webmaster@parliament.uk (UK Parliament Webmaster)
-    </author>
-    <category>
-      House of Commons
-    </category>
-    <category>
-      Westminster Hall
-    </category>
-    <description>
-      Friday 24 February 2012 - 9:30am - 11:00am &lt;br /&gt; Health inequalities in the North East
-      today
-    </description>
-    <parlycal:event id='25638'>
-      <parlycal:house>
-        Commons
-      </parlycal:house>
-      <parlycal:chamber>
-        Westminster Hall
-      </parlycal:chamber>
-      <parlycal:date>
-        2012-01-24
-      </parlycal:date>
-      <parlycal:startTime>
-        09:30:00
-      </parlycal:startTime>
-      <parlycal:endTime>
-        11:00:00
-      </parlycal:endTime>
-      <parlycal:comittee/>
-      <parlycal:inquiry>
-        Health inequalities in the North East - Chi Onwurah
-      </parlycal:inquiry>
-      <parlycal:witnesses/>
-      <parlycal:location/>
-      <parlycal:subject>
-        Health inequalities in the North East
-      </parlycal:subject>
-    </parlycal:event>
-  </item>
-</channel>
-</rss>|)
+        RestClient.stub(:get).and_return(File.read("spec/data/parlyevent-wh.rss"))
         @rssparser = RSSParser.new
         @item = Item.new
         Item.stub(:new).and_return(@item)

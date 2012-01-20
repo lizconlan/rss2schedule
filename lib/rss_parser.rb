@@ -1,5 +1,6 @@
 require 'nokogiri'
 require 'rest_client'
+require 'models/item'
 
 class RSSParser
   attr_reader :feed_url, :rss
