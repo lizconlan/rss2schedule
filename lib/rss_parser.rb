@@ -37,7 +37,8 @@ class RSSParser
           result = parse_other_item(event)
       end
       
-      result.store()
+      #result.store()
+      save_item_data(result)
     end
   end
   
@@ -78,12 +79,12 @@ class RSSParser
     
     item.title = event.subject
     if event.sponsor.nil? or event.sponsor.empty?
-      if event.subject.empty?
+      if event.subject.nil? or event.subject.empty?
         item.title = event.inquiry
       else
         item.title = event.subject
-        item.sponsor = event.inquiry.gsub(event.subject,"").strip
-        if item.sponsor[0..0] == "-"
+        item.sponsor = event.inquiry.gsub(event.subject,"").strip if event.inquiry
+        if item.sponsor and item.sponsor[0..0] == "-"
           item.sponsor = item.sponsor[1..item.sponsor.length].strip
         end
       end
@@ -127,35 +128,32 @@ class RSSParser
   
   def parse_parlyevent(item)
     event_item = RssItem.new
-    event_item.event_id = item.xpath("parlycal:event").attribute("id").value
-    event_item.house = item.xpath("parlycal:event/parlycal:house").text
-    event_item.chamber = item.xpath("parlycal:event/parlycal:chamber").text
+    event_item.event_id = item.xpath("guid").text.gsub("\n", "").strip
+    event_item.house = item.xpath("parlycal:event/parlycal:house").text.gsub("\n", "").strip
+    event_item.chamber = item.xpath("parlycal:event/parlycal:chamber").text.gsub("\n", "").strip
 
-    event_item.committee = item.xpath("parlycal:event/parlycal:comittee").text
-    event_item.subject = item.xpath("parlycal:event/parlycal:subject").text.strip
-    event_item.inquiry = item.xpath("parlycal:event/parlycal:inquiry").text.strip
+    event_item.committee = item.xpath("parlycal:event/parlycal:comittee").text unless item.xpath("parlycal:event/parlycal:witnesses").text.empty?
+    event_item.subject = item.xpath("parlycal:event/parlycal:subject").text.strip.gsub("\n", " ").squeeze(" ").strip
+    event_item.inquiry = item.xpath("parlycal:event/parlycal:inquiry").text.strip.gsub("\n", " ").squeeze(" ").strip
 
-    event_item.date = item.xpath("parlycal:event/parlycal:date").text
+    event_item.date = item.xpath("parlycal:event/parlycal:date").text.gsub("\n", "").strip
     if item.xpath("parlycal:event/parlycal:startTime") and !(item.xpath("parlycal:event/parlycal:startTime").empty?)
-      event_item.start_time = item.xpath("parlycal:event/parlycal:startTime").text
-    else
-      event_item.start_time = nil
+      event_item.start_time = item.xpath("parlycal:event/parlycal:startTime").text.gsub("\n", "").strip
     end
 
     if item.xpath("parlycal:event/parlycal:endTime") and !(item.xpath("parlycal:event/parlycal:endTime").empty?)
-      event_item.end_time = item.xpath("parlycal:event/parlycal:endTime").text
-    else
-      event_item.end_time = nil
+      event_item.end_time = item.xpath("parlycal:event/parlycal:endTime").text.gsub("\n", "").strip
     end
 
-    event_item.notes = item.xpath("parlycal:event/parlycal:witnesses").text
-    event_item.location = item.xpath("parlycal:event/parlycal:location").text
+    event_item.notes = item.xpath("parlycal:event/parlycal:witnesses").text unless item.xpath("parlycal:event/parlycal:witnesses").text.empty?
+    event_item.location = item.xpath("parlycal:event/parlycal:location").text unless item.xpath("parlycal:event/parlycal:location").text.empty?
     
     return event_item
   end
 
   def parse_rss(item)
     event_item = RssItem.new
+    event_item.event_id = item.xpath("guid").text.gsub("\n", "").strip
     
     title = item.xpath("title").text.gsub("\n", " ").squeeze(" ").strip
     if title =~ /House of Commons/
@@ -205,25 +203,25 @@ class RSSParser
     return event_item
   end
   
-  def save_item_data
+  def save_item_data(event)
     item = Item.new
     item.source_file = @feed_url
-    item.rss_id = @guid
-    item.event_id = @event_id
-    item.item_type = @item_type
-    item.date = @date
-    item.title = @subject
-    item.house = @house
-    if @location.nil? or @location.empty?
+    item.rss_id = 'guid should go here'
+    item.event_id = event.event_id
+    item.item_type = event.item_type
+    item.date = event.date
+    item.title = event.title
+    item.house = event.house
+    if event.location.nil? or event.location.empty?
       item.location = "tbc"
     else
-      item.location = @location
+      item.location = event.location
     end
-    item.sponsor = @sponsor unless @sponsor.nil? or @sponsor.empty?
-    item.start_time = @start_time unless @start_time.nil?
-    item.end_time = @end_time unless @end_time.nil?
-    item.link = @link
-    item.notes = @notes unless @notes.nil? or @notes.empty?
+    item.sponsor = event.sponsor unless event.sponsor.nil? or event.sponsor.empty?
+    item.start_time = event.start_time unless event.start_time.nil?
+    item.end_time = event.end_time unless event.end_time.nil?
+    item.link = event.link
+    item.notes = event.notes unless event.notes.nil? or event.notes.empty?
     item.created_at = Time.now
     item.save
   end

@@ -17,10 +17,10 @@
       House of Commons Westminster Hall - Chi Onwurah
     </title>
     <link>
-      http://services.parliament.uk/calendar/Commons/MainChamber/2012/02/24/events.html
+      http://services.parliament.uk/calendar/Commons/WestminsterHall/2012/01/24/events.html
     </link>
     <guid>
-      http://services.parliament.uk/calendar/2012/02/24/events.html#23288
+      http://services.parliament.uk/calendar/2012/01/24/events.html#25638
     </guid>
     <author>
       webmaster@parliament.uk (UK Parliament Webmaster)
@@ -32,8 +32,8 @@
       Westminster Hall
     </category>
     <description>
-      Friday 24 February 2012 - 9:30am - 11:00am &lt;br /&gt; Health inequalities in the North East
-      today
+      Tuesday 24 January 2012 - 9:30am - 11:00am &lt;br /&gt; Health
+      inequalities in the North East
     </description>
     <parlycal:event id='25638'>
       <parlycal:house>
@@ -59,6 +59,100 @@
       <parlycal:location/>
       <parlycal:subject>
         Health inequalities in the North East
+      </parlycal:subject>
+    </parlycal:event>
+  </item>
+  <item>
+    <title>
+      House of Commons Main Chamber - Business
+    </title>
+    <link>
+      http://services.parliament.uk/calendar/Commons/MainChamber/2012/02/24/events.html
+    </link>
+    <guid>
+      http://services.parliament.uk/calendar/2012/02/24/events.html#23288
+    </guid>
+    <author>
+      webmaster@parliament.uk (UK Parliament Webmaster)
+    </author>
+    <category>
+      House of Commons
+    </category>
+    <category>
+      Main Chamber
+    </category>
+    <description>
+      Friday 24 February 2012 &lt;br /&gt; The House is not expected to sit
+      today
+    </description>
+    <parlycal:event id='23288'>
+      <parlycal:house>
+        Commons
+      </parlycal:house>
+      <parlycal:chamber>
+        Main Chamber
+      </parlycal:chamber>
+      <parlycal:date>
+        2012-02-24
+      </parlycal:date>
+      <parlycal:comittee>
+        Business
+      </parlycal:comittee>
+      <parlycal:inquiry>
+        The House is not expected to sit today
+      </parlycal:inquiry>
+      <parlycal:witnesses/>
+      <parlycal:location/>
+      <parlycal:subject>
+        The House is not expected to sit today
+      </parlycal:subject>
+    </parlycal:event>
+  </item>
+  <item>
+    <title>
+      House of Commons Main Chamber - Legislation - Paul Maynard
+    </title>
+    <link>
+      http://services.parliament.uk/calendar/Commons/MainChamber/2012/02/24/events.html
+    </link>
+    <guid>
+      http://services.parliament.uk/calendar/2012/02/24/events.html#23681
+    </guid>
+    <author>
+      webmaster@parliament.uk (UK Parliament Webmaster)
+    </author>
+    <category>
+      House of Commons
+    </category>
+    <category>
+      Main Chamber
+    </category>
+    <description>
+      Friday 24 February 2012 &lt;br /&gt; Concessionary Bus Travel
+      (Amendment) Bill - Second reading - Paul Maynard
+    </description>
+    <parlycal:event id='23681'>
+      <parlycal:house>
+        Commons
+      </parlycal:house>
+      <parlycal:chamber>
+        Main Chamber
+      </parlycal:chamber>
+      <parlycal:date>
+        2012-02-24
+      </parlycal:date>
+      <parlycal:comittee>
+        Legislation
+      </parlycal:comittee>
+      <parlycal:inquiry>
+        Concessionary Bus Travel (Amendment) Bill - Second reading - Paul
+        Maynard
+      </parlycal:inquiry>
+      <parlycal:witnesses/>
+      <parlycal:location/>
+      <parlycal:subject>
+        Concessionary Bus Travel (Amendment) Bill - Second reading - Paul
+        Maynard
       </parlycal:subject>
     </parlycal:event>
   </item>
