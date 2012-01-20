@@ -36,5 +36,53 @@
         today
       </description>
     </item>
+    <item>
+      <title>
+        House of Commons Main Chamber - Business
+      </title>
+      <link>
+        http://services.parliament.uk/calendar/Commons/MainChamber/2012/02/24/events.html
+      </link>
+      <guid>
+        http://services.parliament.uk/calendar/2012/02/24/events.html#23288
+      </guid>
+      <author>
+        webmaster@parliament.uk (UK Parliament Webmaster)
+      </author>
+      <category>
+        House of Commons
+      </category>
+      <category>
+        Main Chamber
+      </category>
+      <description>
+        Friday 24 February 2012 &lt;br /&gt; The House is not expected to sit
+        today
+      </description>
+    </item>
+    <item>
+      <title>
+        House of Commons Main Chamber - Legislation - Paul Maynard
+      </title>
+      <link>
+        http://services.parliament.uk/calendar/Commons/MainChamber/2012/02/24/events.html
+      </link>
+      <guid>
+        http://services.parliament.uk/calendar/2012/02/24/events.html#23681
+      </guid>
+      <author>
+        webmaster@parliament.uk (UK Parliament Webmaster)
+      </author>
+      <category>
+        House of Commons
+      </category>
+      <category>
+        Main Chamber
+      </category>
+      <description>
+        Friday 24 February 2012 &lt;br /&gt; Concessionary Bus Travel
+        (Amendment) Bill - Second reading - Paul Maynard
+      </description>
+    </item>
   </channel>
 </rss>

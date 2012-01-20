@@ -23,4 +23,8 @@ class Item
   
   key :created_at, Date
   key :updated_at, Date
+  
+  def store
+    #update existing record or create new one
+  end
 end
