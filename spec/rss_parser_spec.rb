@@ -26,7 +26,7 @@ describe RSSParser do
   describe "parse" do
     describe "when given an RSS feed without ParlyCal markup" do
       before :each do
-        RestClient.stub(:get).and_return(File.read("spec/data/noparlyevent-wh.rss"))
+        RestClient.stub(:get).and_return(File.read("spec/data/noparlyevent-commons.rss"))
         @rssparser = RSSParser.new
         @item = Item.new
         Item.stub(:new).and_return(@item)
@@ -52,6 +52,8 @@ describe RSSParser do
           RssItem.should_receive(:new).and_return(@rssitem2)
           RssItem.should_receive(:new).and_return(@rssitem3)
         end
+        
+        it "should set the event_id for the RssItem"
         
         it "sets the 'house' for the RssItem" do
           @rssitem.should_receive(:house=).with("Commons")
@@ -136,7 +138,7 @@ describe RSSParser do
 
     describe "when given an RSS feed with ParlyCal markup" do
       before :each do
-        RestClient.stub(:get).and_return(File.read("spec/data/parlyevent-wh.rss"))
+        RestClient.stub(:get).and_return(File.read("spec/data/parlyevent-commons.rss"))
         @rssparser = RSSParser.new
         @item = Item.new
         Item.stub(:new).and_return(@item)
