@@ -95,7 +95,7 @@ describe RSSParser do
           @rssparser.parse
         end
         
-        it "should set the 'note' for the RssItem" do
+        it "should set the 'notes' for the RssItem" do
           @rssitem1.should_receive(:notes=).with("Friday 24 February 2012 - 9:30am - 11:00am <br /> Health inequalities in the North East today")
           @rssitem2.should_receive(:notes=).with("Friday 24 February 2012 <br /> The House is not expected to sit today")
           @rssitem3.should_receive(:notes=).with("Friday 24 February 2012 <br /> Concessionary Bus Travel (Amendment) Bill - Second reading - Paul Maynard")
