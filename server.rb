@@ -19,6 +19,9 @@ end
 
 get '/' do
   @q = params[:q]
+  
+  @item = Item.first(:order => :title.desc)
+
 
   
 	haml :index
