@@ -26,7 +26,7 @@ describe RSSParser do
   describe "parse" do
     describe "when given an RSS feed without ParlyCal markup" do
       before :each do
-        RestClient.stub(:get).and_return(File.read("spec/data/noparlyevent-commons.rss"))
+        RestClient.stub(:get).and_return(File.read("spec/data/noparlyevent.rss"))
         @rssparser = RSSParser.new
         @item = Item.new
         Item.stub(:new).and_return(@item)
@@ -43,7 +43,7 @@ describe RSSParser do
         @rssparser.parse
       end
       
-      describe "when parsing a House of Commons item" do
+      describe "when parsing an item" do
         before :each do
           @rssitem1 = RssItem.new
           @rssitem2 = RssItem.new
@@ -143,7 +143,7 @@ describe RSSParser do
 
     describe "when given an RSS feed with ParlyCal markup" do
       before :each do
-        RestClient.stub(:get).and_return(File.read("spec/data/parlyevent-commons.rss"))
+        RestClient.stub(:get).and_return(File.read("spec/data/parlyevent.rss"))
         @rssparser = RSSParser.new
         @item = Item.new
         Item.stub(:new).and_return(@item)
