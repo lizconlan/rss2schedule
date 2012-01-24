@@ -156,5 +156,106 @@
       </parlycal:subject>
     </parlycal:event>
   </item>
+  <item>
+    <title>
+      House of Lords Main Chamber - Estimated Rising Time
+    </title>
+    <link>
+      http://services.parliament.uk/calendar/Lords/MainChamber/2012/01/23/events.html
+    </link>
+    <guid>
+      http://services.parliament.uk/calendar/2012/01/23/events.html#25778
+    </guid>
+    <author>
+      webmaster@parliament.uk (UK Parliament Webmaster)
+    </author>
+    <category>
+      House of Lords
+    </category>
+    <category>
+      Main Chamber
+    </category>
+    <description>
+      Monday 23 January 2012 - 10:00pm &lt;br /&gt; 
+    </description>
+    <parlycal:event id='25778'>
+      <parlycal:house>
+        Lords
+      </parlycal:house>
+      <parlycal:chamber>
+        Main Chamber
+      </parlycal:chamber>
+      <parlycal:date>
+        2012-01-23
+      </parlycal:date>
+      <parlycal:startTime>
+        22:00:00
+      </parlycal:startTime>
+      <parlycal:comittee>
+        Estimated Rising Time
+      </parlycal:comittee>
+      <parlycal:inquiry/>
+      <parlycal:witnesses/>
+      <parlycal:location/>
+      <parlycal:subject/>
+    </parlycal:event>
+  </item>
+  <item>
+    <title>
+      House of Commons Select Committee - Draft House of Lords Reform Bill
+      Joint Committee
+    </title>
+    <link>
+      http://services.parliament.uk/calendar/Commons/SelectCommittee/2012/02/27/events.html
+    </link>
+    <guid>
+      http://services.parliament.uk/calendar/2012/02/27/events.html#25455
+    </guid>
+    <author>
+      webmaster@parliament.uk (UK Parliament Webmaster)
+    </author>
+    <category>
+      House of Commons
+    </category>
+    <category>
+      Select Committee
+    </category>
+    <description>
+      Monday 27 February 2012 - 4:30pm - Committee Room 4A, Palace of
+      Westminster &lt;br /&gt; to consider the bill - Rt Hon Nick Clegg MP,
+      Deputy Prime Minister, and Mr Mark Harper MP, Minister for Political and
+      Constitutional Reform
+    </description>
+    <parlycal:event id='25455'>
+      <parlycal:house>
+        Commons
+      </parlycal:house>
+      <parlycal:chamber>
+        Select Committee
+      </parlycal:chamber>
+      <parlycal:date>
+        2012-02-27
+      </parlycal:date>
+      <parlycal:startTime>
+        16:30:00
+      </parlycal:startTime>
+      <parlycal:comittee>
+        Draft House of Lords Reform Bill Joint Committee
+      </parlycal:comittee>
+      <parlycal:inquiry>
+        to consider the bill
+      </parlycal:inquiry>
+      <parlycal:witnesses>
+        Rt Hon Nick Clegg MP, Deputy Prime Minister, and Mr Mark Harper MP,
+        Minister for Political and Constitutional Reform
+      </parlycal:witnesses>
+      <parlycal:location>
+        Committee Room 4A, Palace of Westminster
+      </parlycal:location>
+      <parlycal:subject>
+        to consider the bill
+      </parlycal:subject>
+    </parlycal:event>
+  </item>
 </channel>
 </rss>

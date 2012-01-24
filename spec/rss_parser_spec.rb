@@ -160,20 +160,26 @@ describe RSSParser do
         @rssparser.parse
       end
       
-      describe "when parsing a House of Commons item" do
+      describe "when parsing an item" do
         before :each do
           @rssitem1 = RssItem.new
           @rssitem2 = RssItem.new
           @rssitem3 = RssItem.new
+          @rssitem4 = RssItem.new
+          @rssitem5 = RssItem.new
           RssItem.should_receive(:new).and_return(@rssitem1)
           RssItem.should_receive(:new).and_return(@rssitem2)
           RssItem.should_receive(:new).and_return(@rssitem3)
+          RssItem.should_receive(:new).and_return(@rssitem4)
+          RssItem.should_receive(:new).and_return(@rssitem5)
         end
         
         it "should set the 'event_id' for the RssItem" do
           @rssitem1.should_receive(:event_id=).with("http://services.parliament.uk/calendar/2012/01/24/events.html#25638")
           @rssitem2.should_receive(:event_id=).with("http://services.parliament.uk/calendar/2012/02/24/events.html#23288")
           @rssitem3.should_receive(:event_id=).with("http://services.parliament.uk/calendar/2012/02/24/events.html#23681")
+          @rssitem4.should_receive(:event_id=).with("http://services.parliament.uk/calendar/2012/01/23/events.html#25778")
+          @rssitem5.should_receive(:event_id=).with("http://services.parliament.uk/calendar/2012/02/27/events.html#25455")
           @rssparser.parse
         end
         
@@ -181,6 +187,8 @@ describe RSSParser do
           @rssitem1.should_receive(:house=).with("Commons")
           @rssitem2.should_receive(:house=).with("Commons")
           @rssitem3.should_receive(:house=).with("Commons")
+          @rssitem4.should_receive(:house=).with("Lords")
+          @rssitem5.should_receive(:house=).with("Commons")
           @rssparser.parse
         end
         
@@ -188,13 +196,17 @@ describe RSSParser do
           @rssitem1.should_receive(:chamber=).at_least(1).times.with("Westminster Hall")
           @rssitem2.should_receive(:chamber=).at_least(1).times.with("Main Chamber")
           @rssitem3.should_receive(:chamber=).at_least(1).times.with("Main Chamber")
+          @rssitem4.should_receive(:chamber=).at_least(1).times.with("Main Chamber")
+          @rssitem5.should_receive(:chamber=).at_least(1).times.with("Select Committee")
           @rssparser.parse
         end
         
-        it "should not set the 'committee' for the RssItem" do
-          @rssitem1.should_not_receive(:committee=)
-          @rssitem2.should_not_receive(:committee=)
-          @rssitem3.should_not_receive(:committee=)
+        it "should set the 'committee' for the RssItem (if there is one)" do
+          @rssitem1.should_not_receive(:committee=).with("Business")
+          @rssitem2.should_not_receive(:committee=).with("Legislation")
+          @rssitem3.should_not_receive(:committee=).with("Business")
+          @rssitem4.should_receive(:committee=).with("Estimated Rising Time")
+          @rssitem5.should_receive(:committee=).with("Draft House of Lords Reform Bill Joint Committee")
           @rssparser.parse
         end
         
@@ -202,6 +214,8 @@ describe RSSParser do
           @rssitem1.should_receive(:subject=).with("Health inequalities in the North East")
           @rssitem2.should_receive(:subject=).with("The House is not expected to sit today")
           @rssitem3.should_receive(:subject=).with("Concessionary Bus Travel (Amendment) Bill - Second reading - Paul Maynard")
+          @rssitem4.should_receive(:subject=).with("")
+          @rssitem5.should_receive(:subject=).with("to consider the bill")
           @rssparser.parse
         end
         
@@ -209,6 +223,8 @@ describe RSSParser do
           @rssitem1.should_receive(:inquiry=).with("Health inequalities in the North East - Chi Onwurah")
           @rssitem2.should_receive(:inquiry=).with("The House is not expected to sit today")
           @rssitem3.should_receive(:inquiry=).with("Concessionary Bus Travel (Amendment) Bill - Second reading - Paul Maynard")
+          @rssitem4.should_receive(:inquiry=).with("")
+          @rssitem5.should_receive(:inquiry=).with("to consider the bill")
           @rssparser.parse
         end
         
@@ -216,6 +232,8 @@ describe RSSParser do
           @rssitem1.should_not_receive(:notes=)
           @rssitem2.should_not_receive(:notes=)
           @rssitem3.should_not_receive(:notes=)
+          @rssitem4.should_not_receive(:notes=)
+          @rssitem5.should_receive(:notes=).with("Rt Hon Nick Clegg MP, Deputy Prime Minister, and Mr Mark Harper MP, Minister for Political and Constitutional Reform")
           @rssparser.parse
         end
         
@@ -223,6 +241,8 @@ describe RSSParser do
           @rssitem1.should_receive(:date=).with("2012-01-24")
           @rssitem2.should_receive(:date=).with("2012-02-24")
           @rssitem3.should_receive(:date=).with("2012-02-24")
+          @rssitem4.should_receive(:date=).with("2012-01-23")
+          @rssitem5.should_receive(:date=).with("2012-02-27")
           @rssparser.parse
         end
         
@@ -230,6 +250,8 @@ describe RSSParser do
           @rssitem1.should_receive(:start_time=).with("09:30:00")
           @rssitem2.should_not_receive(:start_time=)
           @rssitem3.should_not_receive(:start_time=)
+          @rssitem4.should_receive(:start_time=).with("22:00:00")
+          @rssitem5.should_receive(:start_time=).with("16:30:00")
           @rssparser.parse
         end
         
@@ -237,6 +259,8 @@ describe RSSParser do
           @rssitem1.should_receive(:end_time=).with("11:00:00")
           @rssitem2.should_not_receive(:end_time=)
           @rssitem3.should_not_receive(:end_time=)
+          @rssitem4.should_not_receive(:end_time=)
+          @rssitem5.should_not_receive(:end_time=)
           @rssparser.parse
         end
         
@@ -244,6 +268,7 @@ describe RSSParser do
           @rssitem1.should_not_receive(:sponsor=)
           @rssitem2.should_not_receive(:sponsor=)
           @rssitem3.should_not_receive(:sponsor=)
+          @rssitem4.should_not_receive(:sponsor=)
           @rssparser.parse
         end
         
@@ -251,6 +276,7 @@ describe RSSParser do
           @rssitem1.should_not_receive(:category=)
           @rssitem2.should_not_receive(:category=)
           @rssitem3.should_not_receive(:category=)
+          @rssitem4.should_not_receive(:category=)
           @rssparser.parse
         end
         
@@ -258,6 +284,8 @@ describe RSSParser do
           @rssitem1.should_not_receive(:location=)
           @rssitem2.should_not_receive(:location=)
           @rssitem3.should_not_receive(:location=)
+          @rssitem4.should_not_receive(:location=)
+          @rssitem5.should_receive(:location=).with("Committee Room 4A, Palace of Westminster")
           @rssparser.parse
         end
       end

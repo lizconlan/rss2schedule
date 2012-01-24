@@ -132,9 +132,9 @@ class RSSParser
     event_item.house = item.xpath("parlycal:event/parlycal:house").text.gsub("\n", "").strip
     event_item.chamber = item.xpath("parlycal:event/parlycal:chamber").text.gsub("\n", "").strip
 
-    event_item.committee = item.xpath("parlycal:event/parlycal:comittee").text unless item.xpath("parlycal:event/parlycal:witnesses").text.empty?
-    event_item.subject = item.xpath("parlycal:event/parlycal:subject").text.strip.gsub("\n", " ").squeeze(" ").strip
-    event_item.inquiry = item.xpath("parlycal:event/parlycal:inquiry").text.strip.gsub("\n", " ").squeeze(" ").strip
+    event_item.committee = item.xpath("parlycal:event/parlycal:comittee").text.gsub("\n", " ").squeeze(" ").strip unless item.xpath("parlycal:event/parlycal:comittee").text.empty?
+    event_item.subject = item.xpath("parlycal:event/parlycal:subject").text.gsub("\n", " ").squeeze(" ").strip
+    event_item.inquiry = item.xpath("parlycal:event/parlycal:inquiry").text.gsub("\n", " ").squeeze(" ").strip
 
     event_item.date = item.xpath("parlycal:event/parlycal:date").text.gsub("\n", "").strip
     if item.xpath("parlycal:event/parlycal:startTime") and !(item.xpath("parlycal:event/parlycal:startTime").empty?)
@@ -145,8 +145,8 @@ class RSSParser
       event_item.end_time = item.xpath("parlycal:event/parlycal:endTime").text.gsub("\n", "").strip
     end
 
-    event_item.notes = item.xpath("parlycal:event/parlycal:witnesses").text unless item.xpath("parlycal:event/parlycal:witnesses").text.empty?
-    event_item.location = item.xpath("parlycal:event/parlycal:location").text unless item.xpath("parlycal:event/parlycal:location").text.empty?
+    event_item.notes = item.xpath("parlycal:event/parlycal:witnesses").text.gsub("\n", " ").squeeze(" ").strip unless item.xpath("parlycal:event/parlycal:witnesses").text.empty?
+    event_item.location = item.xpath("parlycal:event/parlycal:location").text.gsub("\n", " ").squeeze(" ").strip unless item.xpath("parlycal:event/parlycal:location").text.empty?
     
     return event_item
   end
