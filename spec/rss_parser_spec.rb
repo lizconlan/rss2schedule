@@ -292,8 +292,11 @@ describe RSSParser do
         
         it "should correctly process the item according to type/venue" do
           @rssparser.stub(:save_item_data)
+          @rssparser.stub(:parse_westminster_hall_item)
+          @rssparser.stub(:parse_business_item)
+          @rssparser.stub(:parse_other_item)
+          
           @rssparser.should_receive(:parse_westminster_hall_item).with(@rssitem1)
-          #@rssparser.stub(:parse_business_item)
           @rssparser.should_receive(:parse_business_item).with(@rssitem2)
           @rssparser.should_receive(:parse_other_item).with(@rssitem5)
           @rssparser.parse
@@ -363,7 +366,7 @@ describe RSSParser do
           # @event1 = double(RssEvent, :subject => "", :sponsor => "", :inquiry => "", :chamber => "", :category => "Westminster Hall")
         end
         
-        it "should do realise that parse_business_item is a valid method call" do
+        it "should set the 'house' for Item" do
           @item1.should_receive(:house=).with("Commons")
           @rssparser.parse_business_item(@event1)
         end
