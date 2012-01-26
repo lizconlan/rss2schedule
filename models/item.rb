@@ -1,5 +1,4 @@
 require 'mongo_mapper'
-require 'htmlentities'
 
 class Item
   include MongoMapper::Document
