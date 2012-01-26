@@ -8,9 +8,6 @@ gem 'bson', '1.4.0'
 gem 'nokogiri', '~>1.4.1'
 gem 'htmlentities', '~>4.2.1'
 gem 'rake'
-gem 'shotgun'
-gem 'sinatra'
-gem 'haml'
 
 group :test do
   gem 'rcov'
