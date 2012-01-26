@@ -93,6 +93,7 @@ class RSSParser
     end
     
     item.house = event.house
+    item.link = event.link
     item.date = event.date
     item.start_time = event.start_time unless event.start_time.nil? or event.start_time.empty?
     item.end_time = event.end_time unless event.end_time.nil? or event.end_time.empty?
@@ -137,6 +138,7 @@ class RSSParser
     event_item.event_id = item.xpath("guid").text.gsub("\n", "").strip
     event_item.house = item.xpath("parlycal:event/parlycal:house").text.gsub("\n", "").strip
     event_item.chamber = item.xpath("parlycal:event/parlycal:chamber").text.gsub("\n", "").strip
+    event_item.link = item.xpath("link").text.gsub("\n", "").strip
 
     event_item.committee = item.xpath("parlycal:event/parlycal:comittee").text.gsub("\n", " ").squeeze(" ").strip unless item.xpath("parlycal:event/parlycal:comittee").text.empty?
     event_item.subject = item.xpath("parlycal:event/parlycal:subject").text.gsub("\n", " ").squeeze(" ").strip

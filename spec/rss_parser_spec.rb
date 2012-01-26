@@ -6,7 +6,7 @@ require 'lib/rss_parser'
  
 describe RSSParser do 
   describe "new" do
-    before :each do
+    before :each do      
       RestClient.stub(:get).and_return("rss")
       @rssparser = RSSParser.new
     end
@@ -25,13 +25,16 @@ describe RSSParser do
   end
   
   describe "parse" do
+    before :each do
+      Item.any_instance.stub(:save)
+    end
+    
     describe "when given an RSS feed without ParlyCal markup" do
       before :each do
         RestClient.stub(:get).and_return(File.read("spec/data/noparlyevent.rss"))
         @rssparser = RSSParser.new
         @item = Item.new
         Item.stub(:new).and_return(@item)
-        @item.stub(:save)
       end
       
       it "calls the parse_rss method" do
@@ -149,7 +152,6 @@ describe RSSParser do
         @rssparser = RSSParser.new
         @item = Item.new
         Item.stub(:new).and_return(@item)
-        @item.stub(:save)
       end
       
       it "calls the parse_parlyevent method" do
@@ -291,6 +293,15 @@ describe RSSParser do
           @rssparser.parse
         end
         
+        it "should set the 'link' for the RssItem" do
+          @rssitem1.should_receive(:link=).with("http://services.parliament.uk/calendar/Commons/WestminsterHall/2012/01/24/events.html")
+          @rssitem2.should_receive(:link=).with("http://services.parliament.uk/calendar/Commons/MainChamber/2012/02/24/events.html")
+          @rssitem3.should_receive(:link=).with("http://services.parliament.uk/calendar/Commons/MainChamber/2012/02/24/events.html")
+          @rssitem4.should_receive(:link=).with("http://services.parliament.uk/calendar/Lords/MainChamber/2012/01/23/events.html")
+          @rssitem5.should_receive(:link=).with("http://services.parliament.uk/calendar/Commons/SelectCommittee/2012/02/27/events.html")
+          @rssparser.parse
+        end
+        
         it "should correctly process the item according to type/venue" do
           @rssparser.stub(:save_item_data)
           @rssparser.stub(:parse_westminster_hall_item)
@@ -306,32 +317,21 @@ describe RSSParser do
 
       describe "when dealing with a Westminster Hall item" do
         before :each do
-          @event1 = double(RssItem, :house => "Commons", :sponsor => nil, :subject => "Health inequalities in the North East", :inquiry => "Health inequalities in the North East - Chi Onwurah", :chamber => "Westminster Hall", :category => nil, :date => "2012-01-24", :start_time => "09:30:00", :end_time => "11:00:00")
+          @event1 = double(RssItem, :house => "Commons", :sponsor => nil, :link => "http://services.parliament.uk/calendar/Commons/WestminsterHall/2012/01/24/events.html", :subject => "Health inequalities in the North East", :inquiry => "Health inequalities in the North East - Chi Onwurah", :chamber => "Westminster Hall", :category => nil, :date => "2012-01-24", :start_time => "09:30:00", :end_time => "11:00:00")
           @item1 = Item.new
           Item.should_receive(:new).and_return(@item1)
-          @item1.stub(:save)
           # @event1 = double(RssEvent, :subject => "", :sponsor => "", :inquiry => "", :chamber => "", :category => "Westminster Hall")
           # @event1 = double(RssEvent, :subject => "", :sponsor => "", :inquiry => "", :chamber => "", :category => "Westminster Hall")
           # @event1 = double(RssEvent, :subject => "", :sponsor => "", :inquiry => "", :chamber => "", :category => "Westminster Hall")
+        end
+        
+        it "should set the 'date' for Item" do
+          @item1.should_receive(:date=).with("2012-01-24")
+          @rssparser.parse_westminster_hall_item(@event1)
         end
         
         it "should set the 'title' for Item" do
           @item1.should_receive(:title=).with("Health inequalities in the North East")
-          @rssparser.parse_westminster_hall_item(@event1)
-        end
-        
-        it "should set the 'sponsor' for Item (if there is one)" do
-          @item1.should_receive(:sponsor=).with("Chi Onwurah")
-          @rssparser.parse_westminster_hall_item(@event1)
-        end
-        
-        it "should set the 'location' for Item" do
-          @item1.should_receive(:location=).with("Westminster Hall")
-          @rssparser.parse_westminster_hall_item(@event1)
-        end
-        
-        it "should set the 'item_type' for Item" do
-          @item1.should_receive(:item_type=).with("Debate")
           @rssparser.parse_westminster_hall_item(@event1)
         end
         
@@ -340,8 +340,13 @@ describe RSSParser do
           @rssparser.parse_westminster_hall_item(@event1)
         end
         
-        it "should set the 'date' for Item" do
-          @item1.should_receive(:date=).with("2012-01-24")
+        it "should set the 'location' for Item" do
+          @item1.should_receive(:location=).with("Westminster Hall")
+          @rssparser.parse_westminster_hall_item(@event1)
+        end
+        
+        it "should set the 'sponsor' for Item (if there is one)" do
+          @item1.should_receive(:sponsor=).with("Chi Onwurah")
           @rssparser.parse_westminster_hall_item(@event1)
         end
         
@@ -354,14 +359,33 @@ describe RSSParser do
           @item1.should_receive(:end_time=).with("11:00:00")
           @rssparser.parse_westminster_hall_item(@event1)
         end
+        
+        it "should set the 'link' for Item" do
+          @item1.should_receive(:link=).with("http://services.parliament.uk/calendar/Commons/WestminsterHall/2012/01/24/events.html")
+          @rssparser.parse_westminster_hall_item(@event1)
+        end
+        
+        it "should set the 'item_type' for Item" do
+          @item1.should_receive(:item_type=).with("Debate")
+          @rssparser.parse_westminster_hall_item(@event1)
+        end
+        
+        it "should set the 'notes' for Item (if there are any)" do
+          @item1.should_not_receive(:notes=)
+          @rssparser.parse_westminster_hall_item(@event1)
+        end
       end
       
       describe "when dealing with a Main Chamber item" do
         before :each do
           @event1 = double(RssItem, :house => "Commons", :sponsor => nil, :subject => "Health inequalities in the North East", :inquiry => "Health inequalities in the North East - Chi Onwurah", :chamber => "Moo", :category => nil, :date => "2012-01-24", :start_time => "09:30:00", :end_time => "11:00:00")
           @item1 = Item.new
+  
+          @event2 = double(RssItem, :house => "Commons", :sponsor => nil, :subject => "Health inequalities in the North East", :inquiry => "Health inequalities in the North East - Chi Onwurah", :chamber => "Moo", :category => nil, :date => "2012-01-24", :start_time => "09:30:00", :end_time => "11:00:00")
+          @item2 = Item.new
+          
           Item.should_receive(:new).and_return(@item1)
-          @item1.stub(:save)
+          
           # @event1 = double(RssEvent, :subject => "", :sponsor => "", :inquiry => "", :chamber => "", :category => "Westminster Hall")
           # @event1 = double(RssEvent, :subject => "", :sponsor => "", :inquiry => "", :chamber => "", :category => "Westminster Hall")
           # @event1 = double(RssEvent, :subject => "", :sponsor => "", :inquiry => "", :chamber => "", :category => "Westminster Hall")
