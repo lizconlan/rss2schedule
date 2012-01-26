@@ -18,7 +18,7 @@ class RSSParser
     items.each do |item|
       @link  = item.xpath("link").text
       @guid = item.xpath("guid").text
-
+      
       event = nil
       
       #prefer the parlycal:event data if available
@@ -69,6 +69,7 @@ class RSSParser
       end
     end
     
+    item.house = event.house
     item.location = event.chamber
     item.item_type = event.category
     item
@@ -82,14 +83,19 @@ class RSSParser
       if event.subject.nil? or event.subject.empty?
         item.title = event.inquiry
       else
-        item.title = event.subject
-        item.sponsor = event.inquiry.gsub(event.subject,"").strip if event.inquiry
-        if item.sponsor and item.sponsor[0..0] == "-"
-          item.sponsor = item.sponsor[1..item.sponsor.length].strip
+        sponsor = event.inquiry.gsub(event.subject,"").strip if event.inquiry
+        if sponsor and sponsor[0..0] == "-"
+          item.sponsor = sponsor[1..sponsor.length].strip
+        else
+          item.sponsor = sponsor unless sponsor.nil?
         end
       end
     end
     
+    item.house = event.house
+    item.date = event.date
+    item.start_time = event.start_time unless event.start_time.nil? or event.start_time.empty?
+    item.end_time = event.end_time unless event.end_time.nil? or event.end_time.empty?
     item.location = event.chamber
     item.item_type = event.category || "Debate"
     item
