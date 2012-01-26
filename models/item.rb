@@ -37,7 +37,11 @@ class Item
   end
   
   def store
-    #update existing record or create new one
+    #look for existing record
+    #if none found, store
+    #else, compare
+    #if match, throw away
+    #else update with revision
   end
 end
 
