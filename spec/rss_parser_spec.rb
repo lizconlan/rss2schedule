@@ -2,6 +2,7 @@ require 'rspec'
 require 'spec_helper'
 require 'models/item'
 require 'models/rss_item'
+require 'lib/rss_parser'
  
 describe RSSParser do 
   describe "new" do
