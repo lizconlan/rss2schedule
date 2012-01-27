@@ -37,19 +37,20 @@ class RSSParser
           result = parse_other_item(event)
       end
       
-      #result.store()
-      save_item_data(result)
+      result.store()
     end
   end
   
   def parse_business_item(event)
     item = Item.new
     
+    title = nil
+    
     if event.sponsor.nil? or event.sponsor.empty?
       if event.subject.nil? or event.subject.empty?
-        item.title = event.inquiry
+        title = event.inquiry
       else
-        item.title = event.subject
+        title = event.subject
         item.sponsor = event.inquiry.gsub(event.subject,"").strip unless event.inquiry.nil?
         if item.sponsor and item.sponsor[0..0] == "-"
           item.sponsor = item.sponsor[1..item.sponsor.length].strip
@@ -60,18 +61,23 @@ class RSSParser
     end
     
     if item.sponsor.nil? or item.sponsor.empty?
-      unless event.subject.nil?
-        subject_parts = event.subject.split(" - ")
+      unless title.nil?
+        subject_parts = title.split(" - ")
         if subject_parts.length == 3
           item.sponsor = subject_parts.pop
-          item.title = subject_parts.join(" - ").strip
+          title = subject_parts.join(" - ").strip
         end
       end
     end
     
+    item.title = title
+    
+    item.source_file = @feed_url
     item.house = event.house
+    item.link = event.link
+    item.date = event.date
     item.location = event.chamber
-    item.item_type = event.category
+    item.item_type = event.category || "Business"
     item
   end
   
@@ -92,6 +98,7 @@ class RSSParser
       end
     end
     
+    item.source_file = @feed_url
     item.house = event.house
     item.link = event.link
     item.date = event.date
@@ -128,6 +135,7 @@ class RSSParser
       end
     end
     
+    item.source_file = @feed_url
     item.sponsor = "#{event.chamber} - #{event.committee}"
     item.item_type = "Meeting"
     item
@@ -209,28 +217,5 @@ class RSSParser
     end
     
     return event_item
-  end
-  
-  def save_item_data(event)
-    item = Item.new
-    item.source_file = @feed_url
-    item.rss_id = 'guid should go here'
-    item.event_id = event.event_id
-    item.item_type = event.item_type
-    item.date = event.date
-    item.title = event.title
-    item.house = event.house
-    if event.location.nil? or event.location.empty?
-      item.location = "tbc"
-    else
-      item.location = event.location
-    end
-    item.sponsor = event.sponsor unless event.sponsor.nil? or event.sponsor.empty?
-    item.start_time = event.start_time unless event.start_time.nil?
-    item.end_time = event.end_time unless event.end_time.nil?
-    item.link = event.link
-    item.notes = event.notes unless event.notes.nil? or event.notes.empty?
-    item.created_at = Time.now
-    item.save
   end
 end
