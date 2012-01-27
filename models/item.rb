@@ -37,11 +37,26 @@ class Item
   end
   
   def store
-    #look for existing record
-    #if none found, store
-    #else, compare
-    #if match, throw away
-    #else update with revision
+    record = Item.find_by_date_and_house_and_title(date, house, title)
+    unless record
+      self.created_at = Time.now
+      self.save
+    else
+      diffs = record.diff(self)
+      unless diffs.empty?
+        changes = {}
+        diffs.keys.each do |var|
+          changes[var] = record.instance_variable_get(var)
+          record.instance_variable_set(var, diffs[var])
+        end
+        self.updated_at = Time.now
+        rev = Revision.new
+        rev.date = self.updated_at
+        rev.diff = changes
+        self.revisions << rev
+        self.save
+      end
+    end
   end
 end
 
