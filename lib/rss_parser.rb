@@ -53,7 +53,7 @@ class RSSParser
         title = event.subject
         sponsor = event.inquiry.gsub(event.subject,"").strip unless event.inquiry.nil?
         if sponsor and sponsor[0..0] == "-"
-          sponsor = sponsor[1..item.sponsor.length].strip
+          sponsor = sponsor[1..sponsor.length].strip
         end
       end
     else
