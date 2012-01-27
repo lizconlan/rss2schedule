@@ -14,6 +14,13 @@ describe Item do
   end
   
   describe "diff" do
+    it "should return a hash of differences between 2 Items" do
+      @item2 = Item.new
+      @item.house = "Commons"
+      @item2.house = "Lords"
+      @item.diff(@item2).should == {"@house" => "Lords"}
+    end
+    
     it "should return an empty hash if comparing identical items" do
       @item.diff(@item.dup).should == {}
     end
@@ -22,13 +29,6 @@ describe Item do
       @item2 = Item.new
       @item._id.should_not == @item2._id
       @item.diff(@item2).should == {}
-    end
-    
-    it "should return a hash of differences between 2 Items" do
-      @item2 = Item.new
-      @item.house = "Commons"
-      @item2.house = "Lords"
-      @item.diff(@item2).should == {"@house" => "Lords"}
     end
   end
 end
