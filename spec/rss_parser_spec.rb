@@ -383,8 +383,8 @@ describe RSSParser do
           @event1 = double(RssItem, :sponsor => nil, :category => nil, :event_id => "http://services.parliament.uk/calendar/2012/03/02/events.html#16764", :house => "Commons", :chamber => "Main Chamber", :link => "http://services.parliament.uk/calendar/Commons/MainChamber/2012/03/02/events.html", :committee => "Legislation", :subject => nil, :inquiry => "Sentencing (Reform) Bill - Second reading - Mr Philip Hollobone", :date => "2012-01-24", :start_time => nil, :end_time => nil, :notes => nil, :location => nil)
           @item1 = Item.new
   
-          #@event2 = double(RssItem, :event_id => "http://services.parliament.uk/calendar/2012/03/02/events.html#16764", :house => "Commons", :chamber => "Main Chamber", :link => "http://services.parliament.uk/calendar/Commons/MainChamber/2012/03/02/events.html", :committee => "Legislation", :subject => nil, :inquiry => "Sentencing (Reform) Bill - Second reading - Mr Philip Hollobone", :date => "2012-01-24", :start_time => nil, :end_time => nil, :notes => nil, :location => nil)
-          #@item2 = Item.new
+          @event2 = double(RssItem, :sponsor => nil, :category => nil, :event_id => "http://services.parliament.uk/calendar/2012/02/24/events.html#23288", :house => "Commons", :chamber => "Main Chamber", :link => "http://services.parliament.uk/calendar/Commons/MainChamber/2012/02/24/events.html", :committee => "Business", :subject => "The House is not expected to sit today", :inquiry => "The House is not expected to sit today", :date => "2012-02-24", :start_time => nil, :end_time => nil, :notes => nil, :location => nil)
+          @item2 = Item.new
           
           Item.should_receive(:new).and_return(@item1)
         end
@@ -392,56 +392,89 @@ describe RSSParser do
         it "should set the 'source_file' for the Item" do
           @item1.should_receive(:source_file=).with("http://services.parliament.uk/calendar/all.rss")
           @rssparser.parse_business_item(@event1)
+          
+          @item2.should_receive(:source_file=).with("http://services.parliament.uk/calendar/all.rss")
+          @rssparser.parse_business_item(@event2)
         end
         
         it "should set the 'date' for the Item" do
           @item1.should_receive(:date=).with("2012-01-24")
           @rssparser.parse_business_item(@event1)
+          
+          @item2.should_receive(:date=).with("2012-02-24")
+          @rssparser.parse_business_item(@event2)
         end
         
         it "should set the 'title' for the Item" do
           @item1.should_receive(:title=).with("Sentencing (Reform) Bill - Second reading")
           @rssparser.parse_business_item(@event1)
+          
+          @item2.should_receive(:title=).with("The House is not expected to sit today")
+          @rssparser.parse_business_item(@event2)
         end
         
         it "should set the 'house' for the Item" do
           @item1.should_receive(:house=).with("Commons")
+          @rssparser.parse_business_item(@event1)
+          
+          @item2.should_receive(:house=).with("Commons")
           @rssparser.parse_business_item(@event1)
         end
         
         it "should set the 'location' for the Item" do
           @item1.should_receive(:location=).with("Main Chamber")
           @rssparser.parse_business_item(@event1)
+          
+          @item2.should_receive(:location=).with("Main Chamber")
+          @rssparser.parse_business_item(@event2)
         end
         
-        it "should set the 'sponsor' for the Item" do
+        it "should set the 'sponsor' for the Item (if there is one)" do
           @item1.should_receive(:sponsor=).with("Mr Philip Hollobone")
           @rssparser.parse_business_item(@event1)
+          
+          @item2.should_not_receive(:sponsor=)
+          @rssparser.parse_business_item(@event2)
         end
         
         it "should set the 'start_time' for Item (if there is one)" do
           @item1.should_not_receive(:start_time=)
           @rssparser.parse_business_item(@event1)
+          
+          @item2.should_not_receive(:start_time=)
+          @rssparser.parse_business_item(@event2)
         end
         
         it "should set the 'end_time' for Item (if there is one)" do
           @item1.should_not_receive(:end_time=)
           @rssparser.parse_business_item(@event1)
+          
+          @item2.should_not_receive(:end_time=)
+          @rssparser.parse_business_item(@event2)
         end
         
         it "should set the 'link' for Item" do
           @item1.should_receive(:link=).with("http://services.parliament.uk/calendar/Commons/MainChamber/2012/03/02/events.html")
           @rssparser.parse_business_item(@event1)
+          
+          @item2.should_receive(:link=).with("http://services.parliament.uk/calendar/Commons/MainChamber/2012/02/24/events.html")
+          @rssparser.parse_business_item(@event2)
         end
         
         it "should set the 'item_type' for Item" do
-          @item1.should_receive(:item_type=).with("Business")
+          @item1.should_receive(:item_type=).with("Legislation")
           @rssparser.parse_business_item(@event1)
+          
+          @item2.should_receive(:item_type=).with("Business")
+          @rssparser.parse_business_item(@event2)
         end
         
         it "should set the 'notes' for Item (if there are any)" do
           @item1.should_not_receive(:notes=)
           @rssparser.parse_business_item(@event1)
+          
+          @item2.should_not_receive(:notes=)
+          @rssparser.parse_business_item(@event2)
         end
       end
       

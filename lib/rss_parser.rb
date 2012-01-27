@@ -51,14 +51,16 @@ class RSSParser
         title = event.inquiry
       else
         title = event.subject
-        item.sponsor = event.inquiry.gsub(event.subject,"").strip unless event.inquiry.nil?
-        if item.sponsor and item.sponsor[0..0] == "-"
-          item.sponsor = item.sponsor[1..item.sponsor.length].strip
+        sponsor = event.inquiry.gsub(event.subject,"").strip unless event.inquiry.nil?
+        if sponsor and sponsor[0..0] == "-"
+          sponsor = sponsor[1..item.sponsor.length].strip
         end
       end
     else
-      item.sponsor = event.sponsor
+      sponsor = event.sponsor
     end
+    
+    item.sponsor = sponsor unless sponsor.nil? or sponsor.empty?
     
     if item.sponsor.nil? or item.sponsor.empty?
       unless title.nil?
@@ -77,7 +79,7 @@ class RSSParser
     item.link = event.link
     item.date = event.date
     item.location = event.chamber
-    item.item_type = event.category || "Business"
+    item.item_type = event.category || event.committee || "Business"
     item
   end
   
@@ -91,10 +93,9 @@ class RSSParser
       else
         sponsor = event.inquiry.gsub(event.subject,"").strip if event.inquiry
         if sponsor and sponsor[0..0] == "-"
-          item.sponsor = sponsor[1..sponsor.length].strip
-        else
-          item.sponsor = sponsor unless sponsor.nil?
+          sponsor = sponsor[1..sponsor.length].strip
         end
+        item.sponsor = sponsor unless sponsor.nil? or sponsor.empty?
       end
     end
     
