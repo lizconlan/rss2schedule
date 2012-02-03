@@ -5,7 +5,6 @@ class Item
   many :revisions
   
   key :event_id, String
-  key :rss_id, String
   key :source_file, String
   
   key :date, String
