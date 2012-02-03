@@ -317,13 +317,18 @@ describe RSSParser do
 
       describe "when dealing with a Westminster Hall item" do
         before :each do
-          @event1 = double(RssItem, :house => "Commons", :sponsor => nil, :link => "http://services.parliament.uk/calendar/Commons/WestminsterHall/2012/01/24/events.html", :subject => "Health inequalities in the North East", :inquiry => "Health inequalities in the North East - Chi Onwurah", :chamber => "Westminster Hall", :category => nil, :date => "2012-01-24", :start_time => "09:30:00", :end_time => "11:00:00")
+          @event1 = double(RssItem, :house => "Commons", :sponsor => nil, :notes => nil, :link => "http://services.parliament.uk/calendar/Commons/WestminsterHall/2012/01/24/events.html", :event_id => "http://services.parliament.uk/calendar/2012/01/24/events.html#25638", :subject => "Health inequalities in the North East", :inquiry => "Health inequalities in the North East - Chi Onwurah", :chamber => "Westminster Hall", :category => nil, :date => "2012-01-24", :start_time => "09:30:00", :end_time => "11:00:00")
           @item1 = Item.new
           Item.should_receive(:new).and_return(@item1)
         end
         
         it "should set the 'source_file' for the Item" do
           @item1.should_receive(:source_file=).with("http://services.parliament.uk/calendar/all.rss")
+          @rssparser.parse_westminster_hall_item(@event1)
+        end
+        
+        it "should set the 'event_id' for the Item" do
+          @item1.should_receive(:event_id=).with("http://services.parliament.uk/calendar/2012/01/24/events.html#25638")
           @rssparser.parse_westminster_hall_item(@event1)
         end
         
@@ -380,13 +385,14 @@ describe RSSParser do
       
       describe "when dealing with a Main Chamber item" do
         before :each do
-          @event1 = double(RssItem, :sponsor => nil, :category => nil, :event_id => "http://services.parliament.uk/calendar/2012/03/02/events.html#16764", :house => "Commons", :chamber => "Main Chamber", :link => "http://services.parliament.uk/calendar/Commons/MainChamber/2012/03/02/events.html", :committee => "Legislation", :subject => nil, :inquiry => "Sentencing (Reform) Bill - Second reading - Mr Philip Hollobone", :date => "2012-01-24", :start_time => nil, :end_time => nil, :notes => nil, :location => nil)
+          @event1 = double(RssItem, :sponsor => nil, :notes => nil, :category => nil, :event_id => "http://services.parliament.uk/calendar/2012/03/02/events.html#16764", :house => "Commons", :chamber => "Main Chamber", :link => "http://services.parliament.uk/calendar/Commons/MainChamber/2012/03/02/events.html", :committee => "Legislation", :subject => nil, :inquiry => "Sentencing (Reform) Bill - Second reading - Mr Philip Hollobone", :date => "2012-01-24", :start_time => nil, :end_time => nil, :notes => nil, :location => nil)
           @item1 = Item.new
   
-          @event2 = double(RssItem, :sponsor => nil, :category => nil, :event_id => "http://services.parliament.uk/calendar/2012/02/24/events.html#23288", :house => "Commons", :chamber => "Main Chamber", :link => "http://services.parliament.uk/calendar/Commons/MainChamber/2012/02/24/events.html", :committee => "Business", :subject => "The House is not expected to sit today", :inquiry => "The House is not expected to sit today", :date => "2012-02-24", :start_time => nil, :end_time => nil, :notes => nil, :location => nil)
+          @event2 = double(RssItem, :sponsor => nil, :notes => nil, :category => nil, :event_id => "http://services.parliament.uk/calendar/2012/02/24/events.html#23288", :house => "Commons", :chamber => "Main Chamber", :link => "http://services.parliament.uk/calendar/Commons/MainChamber/2012/02/24/events.html", :committee => "Business", :subject => "The House is not expected to sit today", :inquiry => "The House is not expected to sit today", :date => "2012-02-24", :start_time => nil, :end_time => nil, :notes => nil, :location => nil)
           @item2 = Item.new
           
           Item.should_receive(:new).and_return(@item1)
+          Item.should_receive(:new).and_return(@item2)
         end
         
         it "should set the 'source_file' for the Item" do
@@ -394,6 +400,14 @@ describe RSSParser do
           @rssparser.parse_business_item(@event1)
           
           @item2.should_receive(:source_file=).with("http://services.parliament.uk/calendar/all.rss")
+          @rssparser.parse_business_item(@event2)
+        end
+        
+        it "should set the 'event_id' for the Item" do
+          @item1.should_receive(:event_id=).with("http://services.parliament.uk/calendar/2012/03/02/events.html#16764")
+          @rssparser.parse_business_item(@event1)
+          
+          @item2.should_receive(:event_id=).with("http://services.parliament.uk/calendar/2012/02/24/events.html#23288")
           @rssparser.parse_business_item(@event2)
         end
         
@@ -479,9 +493,111 @@ describe RSSParser do
       end
       
       describe "when dealing with a general item" do
-        xit "should set the 'source_file' for the Item" do
+        before :each do
+          @event1 = double(RssItem, :house => "Commons", :sponsor => nil, :link => "http://services.parliament.uk/calendar/Commons/SelectCommittee/2012/02/27/events.html", :event_id => "http://services.parliament.uk/calendar/2012/02/27/events.html#25455", :subject => "to consider the bill", :inquiry => "to consider the bill", :chamber => "Select Committee", :category => nil, :date => "2012-02-27", :start_time => "16:30:00", :end_time => nil, :committee => "Draft House of Lords Reform Bill Joint Committee", :location => "Committee Room 4A, Palace of Westminster", :notes => "Monday 27 February 2012 - 4:30pm - Committee Room 4A, Palace of Westminster <br /> to consider the bill - Rt Hon Nick Clegg MP, Deputy Prime Minister, and Mr Mark Harper MP, Minister for Political and Constitutional Reform")
+          @item1 = Item.new
+          
+          @event2 = double(RssItem, :house => "Lords", :sponsor => nil, :link => "http://www.parliament.uk/parliamentary_committees/lords_constitution_committee.cfm", :event_id => "http://services.parliament.uk/calendar/2012/03/07/events.html#26095", :subject => "", :inquiry => nil, :chamber => "Select Committee", :category => nil, :date => "2012-03-07", :start_time => "10:00:00", :end_time => nil, :committee => "Constitution", :location => "Room 1, Palace of Westminster", :notes => "Wednesday 7 March 2012 - 10:00am - Room 1, Palace of Westminster <br /> - This is a private meeting.")
+          @item2 = Item.new
+          
+          Item.should_receive(:new).and_return(@item1)
+          Item.should_receive(:new).and_return(@item2)
+        end
+        
+        it "should set the 'source_file' for the Item" do
           @item1.should_receive(:source_file=).with("http://services.parliament.uk/calendar/all.rss")
           @rssparser.parse_other_item(@event1)
+          
+          @item2.should_receive(:source_file=).with("http://services.parliament.uk/calendar/all.rss")
+          @rssparser.parse_other_item(@event2)
+        end
+        
+        it "should set the 'event_id' for the Item" do
+          @item1.should_receive(:event_id=).with("http://services.parliament.uk/calendar/2012/02/27/events.html#25455")
+          @rssparser.parse_other_item(@event1)
+          
+          @item2.should_receive(:event_id=).with("http://services.parliament.uk/calendar/2012/03/07/events.html#26095")
+          @rssparser.parse_other_item(@event2)
+        end
+        
+        it "should set the 'date' for the Item" do
+          @item1.should_receive(:date=).with("2012-02-27")
+          @rssparser.parse_other_item(@event1)
+          
+          @item2.should_receive(:date=).with("2012-03-07")
+          @rssparser.parse_other_item(@event2)
+        end
+        
+        it "should set the 'title' for the Item" do
+          @item1.should_receive(:title=).with("To consider the Draft House of Lords Reform Bill")
+          @rssparser.parse_other_item(@event1)
+          
+          @item2.should_receive(:title=).with("Private meeting")
+          @rssparser.parse_other_item(@event2)
+        end
+        
+        it "should set the 'house' for the Item" do
+          @item1.should_receive(:house=).with("Commons")
+          @rssparser.parse_other_item(@event1)
+          
+          @item2.should_receive(:house=).with("Lords")
+          @rssparser.parse_other_item(@event2)
+        end
+        
+        it "should set the 'location' for the Item" do
+          @item1.should_receive(:location=).with("Committee Room 4A, Palace of Westminster")
+          @rssparser.parse_other_item(@event1)
+          
+          @item2.should_receive(:location=).with("Room 1, Palace of Westminster")
+          @rssparser.parse_other_item(@event2)
+        end
+        
+        it "should set the 'sponsor' for Item (if there is one)" do
+          @item1.should_receive(:sponsor=).with("Select Committee - Draft House of Lords Reform Bill Joint Committee")
+          @rssparser.parse_other_item(@event1)
+          
+          @item2.should_receive(:sponsor=).with("Select Committee - Constitution")
+          @rssparser.parse_other_item(@event2)
+        end
+        
+        it "should set the 'start_time' for Item (if there is one)" do
+          @item1.should_receive(:start_time=).with("16:30:00")
+          @rssparser.parse_other_item(@event1)
+          
+          @item2.should_receive(:start_time=).with("10:00:00")
+          @rssparser.parse_other_item(@event2)
+        end
+        
+        it "should set the 'end_time' for Item (if there is one)" do
+          @item1.should_not_receive(:end_time=)
+          @rssparser.parse_other_item(@event1)
+          
+          @item2.should_not_receive(:end_time=)
+          @rssparser.parse_other_item(@event2)
+        end
+        
+        it "should set the 'link' for Item" do
+          @item1.should_receive(:link=).with("http://services.parliament.uk/calendar/Commons/SelectCommittee/2012/02/27/events.html")
+          @rssparser.parse_other_item(@event1)
+          
+          @item2.should_receive(:link=).with("http://www.parliament.uk/parliamentary_committees/lords_constitution_committee.cfm")
+          @rssparser.parse_other_item(@event2)
+        end
+        
+        it "should set the 'item_type' for Item" do
+          @item1.should_receive(:item_type=).with("Meeting")
+          @rssparser.parse_other_item(@event1)
+          
+          @item1.should_receive(:item_type=).with("Meeting")
+          @rssparser.parse_other_item(@event2)
+        end
+        
+        it "should set the 'notes' for Item (if there are any)" do
+          @item1.should_receive(:notes=).with("Monday 27 February 2012 - 4:30pm - Committee Room 4A, Palace of Westminster <br /> to consider the bill - Rt Hon Nick Clegg MP, Deputy Prime Minister, and Mr Mark Harper MP, Minister for Political and Constitutional Reform")
+          @rssparser.parse_other_item(@event1)
+          
+          @item2.should_receive(:notes=).with("Wednesday 7 March 2012 - 10:00am - Room 1, Palace of Westminster <br /> - This is a private meeting.")
+          @rssparser.parse_other_item(@event2)
         end
       end
     end

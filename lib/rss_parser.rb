@@ -75,11 +75,13 @@ class RSSParser
     item.title = title
     
     item.source_file = @feed_url
+    item.event_id = event.event_id
     item.house = event.house
     item.link = event.link
     item.date = event.date
     item.location = event.chamber
     item.item_type = event.category || event.committee || "Business"
+    item.notes = event.notes unless event.notes.nil? or event.notes.empty?
     item
   end
   
@@ -100,6 +102,7 @@ class RSSParser
     end
     
     item.source_file = @feed_url
+    item.event_id = event.event_id
     item.house = event.house
     item.link = event.link
     item.date = event.date
@@ -107,38 +110,45 @@ class RSSParser
     item.end_time = event.end_time unless event.end_time.nil? or event.end_time.empty?
     item.location = event.chamber
     item.item_type = event.category || "Debate"
+    item.notes = event.notes unless event.notes.nil? or event.notes.empty?
     item
   end
   
   def parse_other_item(event)
     item = Item.new
     
-    item.location = event.chamber
+    item.location = event.location
     if event.committee == "Estimated Rising Time"
-      item.title = event.committee
+      title = event.committee
       item.item_type = "Business"
     end
     
     if event.subject.nil? or event.subject.empty?
-      case @notes
+      case event.notes
         when /evidence session/
-          item.title = "Evidence Session"
+          title = "Evidence Session"
         when /private meeting/
-          item.title = "Private meeting"
+          title = "Private meeting"
       end
     end
+    title = event.subject if title.nil? or title.empty?
     
-    item.title = event.subject if item.title.nil? or item.title.empty?
-    
-    if item.title == "to consider the bill"
-      if event.committee =~ /(^.* Bill)/
-        item.title = "To consider the #{$1}"
-      end
+    if title == "to consider the bill" and event.committee =~ /(^.* Bill)/
+      item.title = "To consider the #{$1}"
+    else
+      item.title = title
     end
     
+    item.house = event.house
+    item.event_id = event.event_id
+    item.link = event.link
+    item.date = event.date
+    item.start_time = event.start_time unless event.start_time.nil? or event.start_time.empty?
+    item.end_time = event.end_time unless event.end_time.nil? or event.end_time.empty?
     item.source_file = @feed_url
     item.sponsor = "#{event.chamber} - #{event.committee}"
     item.item_type = "Meeting"
+    item.notes = event.notes unless event.notes.nil? or event.notes.empty?
     item
   end
   
