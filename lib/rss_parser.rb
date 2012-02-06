@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 require 'nokogiri'
 require 'rest_client'
 require './models/item'
@@ -159,9 +161,9 @@ class RSSParser
     event_item.chamber = item.xpath("parlycal:event/parlycal:chamber").text.gsub("\n", "").strip
     event_item.link = item.xpath("link").text.gsub("\n", "").strip
 
-    event_item.committee = item.xpath("parlycal:event/parlycal:comittee").text.gsub("\n", " ").squeeze(" ").strip unless item.xpath("parlycal:event/parlycal:comittee").text.empty?
-    event_item.subject = item.xpath("parlycal:event/parlycal:subject").text.gsub("\n", " ").squeeze(" ").strip
-    event_item.inquiry = item.xpath("parlycal:event/parlycal:inquiry").text.gsub("\n", " ").squeeze(" ").strip
+    event_item.committee = clean_text(item.xpath("parlycal:event/parlycal:comittee").text) unless item.xpath("parlycal:event/parlycal:comittee").text.empty?
+    event_item.subject = clean_text(item.xpath("parlycal:event/parlycal:subject").text)
+    event_item.inquiry = clean_text(item.xpath("parlycal:event/parlycal:inquiry").text)
 
     event_item.date = item.xpath("parlycal:event/parlycal:date").text.gsub("\n", "").strip
     if item.xpath("parlycal:event/parlycal:startTime") and !(item.xpath("parlycal:event/parlycal:startTime").empty?)
@@ -172,8 +174,8 @@ class RSSParser
       event_item.end_time = item.xpath("parlycal:event/parlycal:endTime").text.gsub("\n", "").strip
     end
 
-    event_item.notes = item.xpath("parlycal:event/parlycal:witnesses").text.gsub("\n", " ").squeeze(" ").strip unless item.xpath("parlycal:event/parlycal:witnesses").text.empty?
-    event_item.location = item.xpath("parlycal:event/parlycal:location").text.gsub("\n", " ").squeeze(" ").strip unless item.xpath("parlycal:event/parlycal:location").text.empty?
+    event_item.notes = clean_text(item.xpath("parlycal:event/parlycal:witnesses").text) unless item.xpath("parlycal:event/parlycal:witnesses").text.empty?
+    event_item.location = clean_text(item.xpath("parlycal:event/parlycal:location").text) unless item.xpath("parlycal:event/parlycal:location").text.empty?
     
     return event_item
   end
@@ -229,4 +231,12 @@ class RSSParser
     
     return event_item
   end
+
+  private 
+    def clean_text(text)
+      text = text.gsub("\n", " ").squeeze(" ").strip
+      text = text.gsub(/[‘’]/, "'")
+      text = text.gsub(/[”“]/, '"')
+      text
+    end
 end

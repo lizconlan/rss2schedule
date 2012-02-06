@@ -216,7 +216,7 @@ describe RSSParser do
         end
         
         it "should set the 'subject' for the RssItem" do
-          @rssitem1.should_receive(:subject=).with("Health inequalities in the North East")
+          @rssitem1.should_receive(:subject=).with("The UK Government's agricultural policy as it relates to Wales")
           @rssitem2.should_receive(:subject=).with("The House is not expected to sit today")
           @rssitem3.should_receive(:subject=).with("Concessionary Bus Travel (Amendment) Bill - Second reading - Paul Maynard")
           @rssitem4.should_receive(:subject=).with("")
@@ -225,7 +225,7 @@ describe RSSParser do
         end
         
         it "should set the 'inquiry' for the RssItem" do
-          @rssitem1.should_receive(:inquiry=).with("Health inequalities in the North East - Chi Onwurah")
+          @rssitem1.should_receive(:inquiry=).with("The UK Government's agricultural policy as it relates to Wales - Chi Onwurah")
           @rssitem2.should_receive(:inquiry=).with("The House is not expected to sit today")
           @rssitem3.should_receive(:inquiry=).with("Concessionary Bus Travel (Amendment) Bill - Second reading - Paul Maynard")
           @rssitem4.should_receive(:inquiry=).with("")
