@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 require 'rspec'
 require './spec/spec_helper'
 require './models/item'
@@ -234,7 +236,7 @@ describe RSSParser do
         end
         
         it "should set the 'notes' for the RssItem (if there are any)" do
-          @rssitem1.should_not_receive(:notes=)
+          @rssitem1.should_receive(:notes=).with("Frédéric de Hemptinne, Principal Consultant, The Sustainable Synergies Group (SSG)")
           @rssitem2.should_not_receive(:notes=)
           @rssitem3.should_not_receive(:notes=)
           @rssitem4.should_not_receive(:notes=)
