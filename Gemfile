@@ -10,6 +10,6 @@ gem 'htmlentities', '~>4.2.1'
 gem 'rake'
 
 group :test do
-  gem 'rcov'
+  gem 'simplecov'
   gem 'rspec'
 end

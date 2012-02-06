@@ -27,9 +27,9 @@ class Item
   def diff(other)
     diffs = {}
     self.instance_variables.each do |var|
-      unless var.include?("before_type_cast")
+      unless var.to_s.include?("before_type_cast")
         a, b = self.instance_variable_get(var), other.instance_variable_get(var)
-        diffs[var] = b if a != b and var != "@_id"
+        diffs[var] = b if a != b and var != :@_id
       end
     end
     return diffs

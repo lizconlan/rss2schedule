@@ -1,6 +1,6 @@
 require 'rspec'
-require 'spec_helper'
-require 'models/item'
+require './spec/spec_helper'
+require './models/item'
  
 describe Item do
   before :each do      
@@ -18,7 +18,7 @@ describe Item do
       @item2 = Item.new
       @item.house = "Commons"
       @item2.house = "Lords"
-      @item.diff(@item2).should == {"@house" => "Lords"}
+      @item.diff(@item2).should == {:@house => "Lords"}
     end
     
     it "should return an empty hash if comparing identical items" do
@@ -67,7 +67,7 @@ describe Item do
       it "should create a new Revision" do
         revision = Revision.new
         Revision.should_receive(:new).and_return(revision)
-        revision.should_receive(:diff=).with({"@end_time" => "20:00:00"})
+        revision.should_receive(:diff=).with({:@end_time => "20:00:00"})
         @item.store
         @item.revisions.first.should eql revision
       end
