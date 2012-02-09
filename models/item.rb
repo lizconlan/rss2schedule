@@ -22,8 +22,8 @@ class Item
   
   key :notes, String
   
-  key :created_at, Date
-  key :updated_at, Date
+  key :created_at, Time
+  key :updated_at, Time
   
   #adapted from http://stackoverflow.com/questions/1648473/ruby-get-list-of-different-properties-between-objects#answer-1648547
   def diff(other)
@@ -31,7 +31,7 @@ class Item
     self.instance_variables.each do |var|
       unless var.to_s.include?("before_type_cast")
         a, b = self.instance_variable_get(var), other.instance_variable_get(var)
-        diffs[var] = b if a != b and var != :@_id
+        diffs[var] = b if a != b and !(["@_id", "@created_at", "@_revisions", "@updated_at", "@_new", "@changed_attributes"].include?(var.to_s))
       end
     end
     return diffs
@@ -54,8 +54,8 @@ class Item
         rev = Revision.new
         rev.date = self.updated_at
         rev.diff = changes
-        self.revisions << rev
-        self.save
+        record.revisions << rev
+        record.save
       end
     end
   end
