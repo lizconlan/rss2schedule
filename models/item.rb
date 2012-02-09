@@ -38,7 +38,7 @@ class Item
   end
   
   def store
-    record = Item.find_by_date_and_house_and_title(date, house, title)
+    record = Item.find_by_event_id(event_id)
     unless record
       self.created_at = Time.now
       self.save
