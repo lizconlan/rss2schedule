@@ -29,3 +29,8 @@ end
 
 
 RSpec::Core::RakeTask.new(:spec)
+
+task :cron do
+  parser = RSSParser.new
+  parser.parse()
+end
