@@ -8,7 +8,9 @@ Uses the rake cron task to call the parser (named to fit in with Heroku's naming
 
 (Assumes Ruby 1.9.2)
 
-bundle install
+* bundle install
+* add your MongoDB connection string to mongo.yml.example
+* rename mongo.yml.example to mongo.yml
 
 ## Disclaimer
 
